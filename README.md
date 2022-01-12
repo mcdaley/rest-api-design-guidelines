@@ -1,16 +1,20 @@
-% Rest API Design Guidelines
+# Rest API Design Guidelines
 
-Rest API Design Guidelines
-===========================
-
-# Overview
-The following document provides detailed guidelines and examples for designing RESTful Application Programming Interfaces (APIs) that follow the OPEN API specification. The goal of the document is to define a set of standards and best practices for building APIs, so that product, engineering, and QA teams can focus on the business logic of the APIs.
+The following document provides detailed guidelines and examples for designing 
+RESTful Application Programming Interfaces (APIs) that follow the OPEN API 
+specification. The goal of the document is to define a set of standards and 
+best practices for building APIs, so that product, engineering, and QA teams 
+can focus on the business logic of the APIs.
 
 ## Restful APIs
-RESTful APIs leverage the HTTP verbs POST, GET, PUT/PATCH, and DELETE to perform CRUD (Create, Read, Update, and Delete) on data or resources. The following table shows the expected behavior for typical RESTful APIs and the rest of the document will provide details and guidelines for designing RESTful APIs.
+RESTful APIs leverage the HTTP verbs POST, GET, PUT/PATCH, and DELETE to 
+perform CRUD (Create, Read, Update, and Delete) on data or resources. The 
+following table shows the expected behavior for typical RESTful APIs and 
+the rest of the document will provide details and guidelines for designing 
+RESTful APIs.
 
 | Resource                | POST                                   | GET                                     | PUT/PATCH                                 | DELETE                                |
-| ----------------------- | -------------------------------------- | --------------------------------------- | ------------------------------------------| ------------------------------------- |
+| :---                    | :---                                   | :---                                    | :---                                      | :---                                  |
 | /accounts               | Create a new account                   | Retrieve all accounts                   | Bulk update of accounts                   | Remove all accounts                   |
 | /accounts/1             | Error                                  | Retrieve details for account 1          | Update details for account if it exists   | Remove account 1                      |
 | /accounts/1/transaction | Create a new transaction for account 1 | Retrieve all transactions for account 1 | Bulk update of transactions for account 1 | Remove all transactions for account 1 |
@@ -44,7 +48,7 @@ any item within your system and store these identifiers for later use. Resource
 identifiers can be any of the following:
 
 | Resource Type | Example                                        |
-| ------------- | ---------------------------------------------- |
+| :---          | :---                                           |
 | Numeric       | /customers/43562                               |
 | String        | /currency/usd                                  |
 | GUID          | /accounts/0d047d80-eb69-4665-9395-6df5a5e569a4 |
@@ -95,7 +99,7 @@ Content-Type: application/json
 
 ### TEST trying to make a section of code bold
 <pre>
-  <b>GET /accounts/123456</b>
+  <b><i>GET /accounts/123456</i></b>
   200 OK
   Content-Type: application/json
 
