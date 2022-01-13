@@ -68,7 +68,7 @@ of a resource at any particular time. When you ask the system for
 account information you will receive a representation of the account 
 as shown below:
 
-```json
+```javascript
 GET /accounts/123456
 200 OK
 Content-Type: application/json
