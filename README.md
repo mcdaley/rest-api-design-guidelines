@@ -1,3 +1,8 @@
+<style>
+  H1{color:Blue !important;}
+  H2{color:DarkOrange !important;}
+</style>
+
 # Rest API Design Guidelines
 
 The following document provides detailed guidelines and examples for designing 
@@ -107,11 +112,11 @@ Content-Type: application/json
     “Id”:                “123456”,
     “nickname”:          “Spending”,
     “routing_number”:    “123456789”,
-    <b><i>
+    <span style="color:red;">
     “available_balance”: 400.00,
     “posted_balance”:    400.00,
     “status”:            “blocked”
-    </b></i>
+    </span>
   }
 </pre>
 
