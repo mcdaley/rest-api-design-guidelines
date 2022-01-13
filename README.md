@@ -109,14 +109,17 @@ Content-Type: application/json
   Content-Type: application/json
 
   {
-    “Id”:                “123456”,
+    “id”:                “123456”,
     “nickname”:          “Spending”,
     “routing_number”:    “123456789”,
-    <span style="color:red;">
-    “available_balance”: 400.00,
-    “posted_balance”:    400.00,
-    “status”:            “blocked”
-    </span>
+    <b><i>“available_balance”: 400.00,</b></i>
+    <b><i>“posted_balance”:    400.00,</b></i>
+    <b><i>“status”:            “blocked”</b></i>
+    "fred":               "flintstone"
+    <b><i>
+    "barney":             "rubble",
+    ""mister":            "slate"
+    </b></i>
   }
 </pre>
 
