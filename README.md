@@ -68,7 +68,7 @@ of a resource at any particular time. When you ask the system for
 account information you will receive a representation of the account 
 as shown below:
 
-```
+```json
 GET /accounts/123456
 200 OK
 Content-Type: application/json
@@ -87,24 +87,8 @@ This representation can change over time as the system and data within
 changes. A future call to this same endpoint may yield a different 
 representation if the account balance changes or if the account is blocked.
 
-```
-GET /accounts/123456
-200 OK
-Content-Type: application/json
-
-{
-  “Id”:                “123456”,
-  “nickname”:          “Spending”,
-  “routing_number”:    “123456789”,
-  “available_balance”: 400.00,
-  “posted_balance”:    400.00,
-  “status”:            “blocked”
-}
-```
-
-### TEST trying to make a section of code bold
 <pre>
-  <b><i>GET /accounts/123456</i></b>
+  GET /accounts/123456
   200 OK
   Content-Type: application/json
 
@@ -115,11 +99,6 @@ Content-Type: application/json
     <b><i>“available_balance”: 400.00,</b></i>
     <b><i>“posted_balance”:    400.00,</b></i>
     <b><i>“status”:            “blocked”</b></i>
-    "fred":               "flintstone"
-    <b><i>
-    "barney":             "rubble",
-    ""mister":            "slate"
-    </b></i>
   }
 </pre>
 
