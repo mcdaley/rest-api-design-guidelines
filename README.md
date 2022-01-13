@@ -235,12 +235,16 @@ recommended to stop after one level.
 ```
 // List of magazines
 GET https://www.ex.com/api/v1/magazines
+
 // Sort list of magazines by issue date from earliest to latest
 GET https://www.ex.com/api/v1/magazines?sort_field=issue_date&sort=asc
+
 // Get a specific issue of a magazine
 GET https://www.ex.com/api/v1/magazines/34
+
 // All articles in an issue of a magazine
 GET https://www.ex.com/api/v1/magazines/34/articles
+
 // Get a specific article in a magazine
 GET https://www.ex.com/api/v1/magazines/34/articles/99
 ```
@@ -251,8 +255,84 @@ GET https://www.ex.com/api/v1/magazines/34/articles/99
 // Non-plural resource:
 GET http://www.example.com/api/v1/magazine
 GET http://www.example.com/api/v1/magazine/34
+
 // Verb in URL
 POST http://www.example.com/api/v1/magazines/35/create
+
 // Filter outside of query string
 GET http://www.example.com/api/v1/magazines/2020/desc
 ```
+
+# Data Types
+The [Open API Specification](https://swagger.io/docs/specification/data-models/data-types/) 
+defines all of the data types supported by APIs that includes strings, numbers, 
+integers, boolean, array, and objects. The following sections highlight the 
+supported data types in the request and response bodies and query parameters.
+
+## Numbers
+| Type    | Format | Description |
+| :---    | :---   | :---        |
+| number  | -      | Any numbers |
+| number  | float  | Floating-point numbers |
+| number  | double | Floating-point numbers with double precision |
+| integer | -      | Integer numbers |
+| integer | int32  | Signed 32-bit integers (commonly used integer type) |
+| integer | int64  | Signed 64-bit integers (long type) |
+
+**Note:** that strings containing numbers, such as “17” are considered 
+strings and not numbers.
+
+## Boolean
+The boolean type represents true and false.
+
+## String
+Strings are used to specify text values such as email, uuid, and any other 
+text values. The OPEN API Specification also defines a format modifier 
+for string formats for date, date-time, password, byte, and binary.
+
+## Dates
+Dates are formatted strings that can be converted to the Date and Datetime 
+by API clients and the following sections define the standard formats.
+
+### Date
+In the request body, response body, and query parameters dates will be strings 
+formatted using the `YYYY-MM-DD` format (e.g., 2021-09-18).
+
+### Datetime
+In the request body, response body, and query parameters datetime values will 
+be strings formatted as:
+
+```
+YYYY-MM-DDThh:mm:ss:fff
+```
+
+Where,
+
+| Date Component | Description | Example |
+| :---           | :---        | :---    |
+| YYYY           | Four digit year                      | 2021 |
+| MM             | Two digit month (with leading zero)  | 04 |
+| DD             | Two digit date (with leading zero)   | 27 |
+| T              | Set character indicating the start of the time element in a datetime format | T |
+| hh             | Two digits hour (00 - 23)            | 18 |
+| mm             | Two digits minute (00-59)            | 38 |
+| ss             | Two digits second | 10 |
+| fff            | Three digits millisecond (000 - 999) | 456 |
+
+### Time Zones
+TBD
+
+### Date Field Naming Conventions
+When using data fields, the following naming conventions for these fields 
+should be used:
+
+- For properties requiring both date and time, services MUST use the suffix datetime, e.g., `start_datetime`.
+- For properties requiring only date information, services MUST use the suffix date, e.g., `birth_date`.
+- For properties requiring only time information, services MUST use the suffix time, e.g., `start_time`.
+
+### Money
+TBD
+Monetary values need to be stored in a number format that will not improperly 
+round up or round down values.
+
+
