@@ -107,9 +107,9 @@ Content-Type: application/json
     “Id”:                “123456”,
     “nickname”:          “Spending”,
     “routing_number”:    “123456789”,
-    “available_balance”: 400.00,
-    “posted_balance”:    400.00,
-    “status”:            “blocked”
+    <span style="color:red"> “available_balance”: 400.00, </span>
+    <span style="color:red"> “posted_balance”:    400.00, </span>
+    <span style="color:red"> “status”:            “blocked” </span>
   }
 </pre>
 
