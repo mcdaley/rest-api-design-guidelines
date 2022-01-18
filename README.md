@@ -1,8 +1,3 @@
-<style>
-  H1{color:Blue !important;}
-  H2{color:DarkOrange !important;}
-</style>
-
 # Rest API Design Guidelines
 
 The following document provides detailed guidelines and examples for designing 
@@ -27,13 +22,13 @@ RESTful APIs.
 ## References
 The document leverages the following references:
 
-- Australian Government - API Design Standard
-- White House Web API Standards
-- JSON Schema Specification
-- OData 4.01
-- Standards for Event Driven APIs
-- Refinery API Standards
-- Open API Guide
+- [Open API Guide](https://swagger.io/docs/specification/about/)
+- [Australian Government - API Design Standard](https://api.gov.au/standards/national_api_standards/index.html)
+- [White House Web API Standards](https://github.com/WhiteHouse/api-standards)
+- [JSON Schema Specification](https://json-schema.org/specification.html)
+- [OData 4.01](https://www.odata.org/documentation/)
+- [Standards for Event Driven APIs](https://vedcraft.com/architecture/standards-for-defining-event-driven-and-restful-apis/)
+- [Refinery API Standards](https://github.com/refinery29/api-standards#pagination)
 
 # Definitions
 
@@ -185,8 +180,8 @@ In nearly all other situations camelCase OR snake_case, ( _ ), MUST be used.
 
 #### Resource Identifier
 When performing an action on a specific resource then the Id in the documentation 
-will be the name of the resource w/ ‘_id’ appended to the end, e.g. account_id, 
-user_id when using the snake_case naming convention. The following are examples 
+will be the name of the resource w/ ‘_id’ appended to the end, e.g. **account_id**, 
+**user_id** when using the snake_case naming convention. The following are examples 
 of naming Ids:
 
 ```
@@ -330,9 +325,52 @@ should be used:
 - For properties requiring only date information, services MUST use the suffix date, e.g., `birth_date`.
 - For properties requiring only time information, services MUST use the suffix time, e.g., `start_time`.
 
-### Money
+## Money
 TBD
 Monetary values need to be stored in a number format that will not improperly 
 round up or round down values.
+
+## Currency
+Use the 3 character ISO definitions for the currency codes, i.e., USD, EUR.
+
+### Country Codes
+Use the 3 character ISO definitions for country codes, i.e., USA, CAN, GER.
+
+## Enumerated Values
+For all enumerated values the APIs will define human understandable string 
+definitions for request, response, and URI parameters instead of numeric 
+values. For example account type would equal ‘Checking’ or ‘Savings’ instead 
+of 1001 or 1002.
+
+## Addresses
+An address is a system resource and will only support US addresses for the 
+initial product launch. The following format is proposed based on the 
+lob.com APIs which is a direct mail service and has the following properties:
+
+| Field           | Required | Format                         | Description |
+| :---            | :---     | :---                           | :--- |
+| name            | Yes      | <= 40 characters               |
+| company         | No       | <= 40 characters               | Optional company name for the user. |
+| address_line1   | Yes      | <= 64 characters               | The primary number, street name, and directional information. |
+| address_line2   | No       | <= 64 characters               | An optional field containing any information which can't fit into line 1. |
+| address_city    | Yes      | <= 200 characters              | |
+| address_state   | Yes      | 2 letter state short-name code | Enumerated list of 50 states, e.g. CA, NY, ... |
+| address_zip     | Yes      | ^\d{5}(-\d{4})?$               | Must follow the ZIP format of 12345 or ZIP+4 format of 12345-1234. |
+| address_country | Yes      | 3 letter ISO country code.     | Enumerated list of country codes, e.g., USA, CAN |
+
+# API Versioning
+An API is a public contract between a server and a consumer and it is necessary 
+to support old versions of the API when new versions are released.  APIs 
+need to follow Semantic Versioning [https://semver.org](https://semver.org). The 
+version number for the APIs will support MAJOR.MINOR.PATCH versions and the 
+versions are incremented:
+
+| MAJOR | When incompatible API changes are made to the API. |
+| MINOR | When functionality is added that is backwards compatible. |
+| PATCH | When backward compatible bug fixes are implemented. |
+
+**NOTE:** Only the MAJOR version is specified in the URI and responses will
+include the version number of the API to help developers debug issues.
+
 
 
