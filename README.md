@@ -365,12 +365,166 @@ need to follow Semantic Versioning [https://semver.org](https://semver.org). The
 version number for the APIs will support MAJOR.MINOR.PATCH versions and the 
 versions are incremented:
 
-| MAJOR | When incompatible API changes are made to the API. |
-| MINOR | When functionality is added that is backwards compatible. |
-| PATCH | When backward compatible bug fixes are implemented. |
+| Version | Description |
+| :---    | :--- |
+| MAJOR   | When incompatible API changes are made to the API. |
+| MINOR   | When functionality is added that is backwards compatible. |
+| PATCH   | When backward compatible bug fixes are implemented. |
 
 **NOTE:** Only the MAJOR version is specified in the URI and responses will
 include the version number of the API to help developers debug issues.
+
+# API Requests
+
+## Request Headers
+APIs can support various request headers and the following sections define
+some of the common request headers:
+
+### Authorization
+APIs Needs to support one of the following authorization headers:
+- API Key
+- Basic Auth (API Key + Secret)
+- Bear {json web token}	
+
+### Content-Type
+Type of content to send, a choice of:
+- application/json
+- application/xml
+- application/x-www-form-urlencoded
+- multipart/form-data
+- text/plain; charset=utf-8
+- text/html
+- application/pdf
+- image/png
+
+### Accept
+Type of content to send, a choice of:
+- application/json
+- application/xml
+- application/x-www-form-urlencoded
+- multipart/form-data
+- text/plain; charset=utf-8
+- text/html
+- application/pdf
+- image/png
+
+### Request-Id
+Unique identifier provided by the client that allows the service to track 
+client requests and to support idempotency.
+
+### Connection
+TBD
+
+### Date
+The date and time at which the message was originated, in "HTTP-date" format 
+as defined by RFC 7231 Date/Time Formats. E.g. Tue, 15 Jan 2022 08:12:31 GMT
+
+### Cache-Control
+TBD
+
+Payload data **MUST NOT** be used in HTTP Headers. They are reserved for 
+transversal information (authentication token, monitoring token, request 
+properties etc).
+
+## HTTP Request Methods
+Rest APIs leverage the Http  **POST**, **GET**, **PUT/PATCH**, and **DELETE** 
+operations to perform CRUD (Create, Read, Update, and Delete) on namespaces, 
+resources, and resource identifiers, where an an operation is defined by the 
+user of a HTTP method and a resource path. The following table provides 
+definitions and examples of HTTP requests:
+
+### GET
+Fetches one or more resources.
+
+```
+GET /customers
+GET /accounts
+GET /accounts/456789
+GET /accounts/456789/transactions
+GET /accounts/456789/transactions/123
+```
+
+### POST
+Creates a new resource.
+
+```
+POST /customers
+POST /accounts
+POST /accounts/456789/transactions
+```
+
+### PUT
+Updates all of the fields in a resource.
+
+```
+PUT /customers/john-doe
+PUT /accounts/456789
+PUT /accounts/456789/transactions/123
+```
+
+### PATCH
+Update some of the fields in a resource.
+
+```
+PATCH /customers/john-doe
+PATCH /accounts/456789
+PATCH /accounts/456789/transactions/123
+```
+
+### DELETE
+Deletes a resource.
+
+```
+DELETE /customers/john-doe
+DELETE /account/456789
+DELETE /accounts/456789/transactions/123
+```
+
+## Request Payload Formats
+The APIs MUST support a JSON formatted payload when supplied. Other payload formats 
+such as XML, CSB, and YAML may be supported as required. The JSON payloads need 
+to follow the [JSON Schema Specification](https://json-schema.org/specification.html), 
+below is an example JSON request payload.
+
+```json
+{
+  “field1”: “value1”,
+  “field2”: “value2”,
+  “field3”: “value3”,
+  “field4”: {
+    “subfield1”: “subvalue1”,
+    “subfield2”: “subvalue2”
+  }
+}
+```
+
+## Idempotency
+An idempotent HTTP method is one that can be called many times without different 
+outcomes. In some cases, secondary calls will result in a different response 
+code, but there will be no change in the state of the resource.
+
+As an example, when you invoke N similar DELETE requests, the first request will 
+delete the resource and the response will be 200 (OK) or 204 (No Content). Further 
+requests will return 404 (Not Found). Clearly, the response is different from 
+the first request, but there is no change of state for any resource on the server 
+side because the original resource is already deleted.
+
+RESTful API methods MUST adhere to the specified idempotency defined in the 
+table below:
+
+| HTTP Method | Is  Idempotent? |
+| :---        | :---            |
+| GET         | True            |
+| POST        | False           |
+| PUT         | True            |
+| PATCH       | False           |
+| DELETE      | True            |
+| HEAD        | True            |
+| OPTIONS     | True            |
+
+
+
+
 
 
 
