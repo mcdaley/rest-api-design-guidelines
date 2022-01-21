@@ -97,6 +97,21 @@ representation if the account balance changes or if the account is blocked.
   }
 </pre>
 
+## Controller Resource
+A controller resource models a procedural concept. Controller resources are like 
+executable functions, with parameters and return values, inputs, and outputs. 
+Use a “verb” to denote controller archetype. In the examples below, the controller 
+resource for accounts is block and the controller resource for cards is pin. Both 
+block and pin are used to make changes to the Account and Card resources.
+
+```
+// Block an account
+POST /accounts/{account_id}/block 
+
+// Update a card’s pin
+PUT /cards/{card_id}/pin
+```
+
 ## Namespace
 A namespace is an optional way for a service to define a grouping of 
 related functions within the system. Namespaces could be high-level 
@@ -347,16 +362,16 @@ An address is a system resource and will only support US addresses for the
 initial product launch. The following format is proposed based on the 
 lob.com APIs which is a direct mail service and has the following properties:
 
-| Field           | Required | Format                         | Description |
-| :---            | :---     | :---                           | :--- |
-| name            | Yes      | <= 40 characters               |
-| company         | No       | <= 40 characters               | Optional company name for the user. |
-| address_line1   | Yes      | <= 64 characters               | The primary number, street name, and directional information. |
-| address_line2   | No       | <= 64 characters               | An optional field containing any information which can't fit into line 1. |
-| address_city    | Yes      | <= 200 characters              | |
-| address_state   | Yes      | 2 letter state short-name code | Enumerated list of 50 states, e.g. CA, NY, ... |
-| address_zip     | Yes      | ^\d{5}(-\d{4})?$               | Must follow the ZIP format of 12345 or ZIP+4 format of 12345-1234. |
-| address_country | Yes      | 3 letter ISO country code.     | Enumerated list of country codes, e.g., USA, CAN |
+| Field   | Required | Format                         | Description |
+| :---    | :---     | :---                           | :--- |
+| name    | Yes      | <= 40 characters               |
+| company | No       | <= 40 characters               | Optional company name for the user. |
+| line1   | Yes      | <= 64 characters               | The primary number, street name, and directional information. |
+| line2   | No       | <= 64 characters               | An optional field containing any information which can't fit into line 1. |
+| city    | Yes      | <= 200 characters              | |
+| state   | Yes      | 2 letter state short-name code | Enumerated list of 50 states, e.g. CA, NY, ... |
+| zip     | Yes      | ^\d{5}(-\d{4})?$               | Must follow the ZIP format of 12345 or ZIP+4 format of 12345-1234. |
+| country | Yes      | 3 letter ISO country code.     | Enumerated list of country codes, e.g., USA, CAN |
 
 # API Versioning
 An API is a public contract between a server and a consumer and it is necessary 
@@ -792,21 +807,491 @@ should have the following the fields:
 | Client/User Id  | Unique identifier to track which user/client made the API request. |
 | Message         | Human understandable message that describes the informational or error message. |
 
+# REST API Standard Request and Responses
+The following sections define standard RESTful API requests and responses using an 
+example banking system. The examples cover all of the basic CRUD operations for a 
+RESTful API and define when to use different response codes.
+
+**Note:** The API Responses may seem verbose by returning
+the resource instead of less information, but the idea is to standardize 
+and simplify API definitions and coding standards as will be shown in example
+code for each of the responses.
 
 
+## Create Resource: POST /api/v1/{resource}
+The ```POST /api/v1/{resource}``` creates a new resource and returns the new 
+resource in the response.
+
+### Request
+
+#### Query Parameters
+NA
+
+#### Headers
+| Header       | Definition |
+| :---         | :--- |
+| Content Type | application/json |
+| Authorize    | Bearer {JWT} |
+| requestID    | Unique Id for the transaction to support idempotency |
+
+#### Body
+Example request body for creating a new Account:
+
+```
+{
+  “name”:            “My Checking”,
+  “type:             “checking”,
+  “opening_balance”: 0,
+  “opening_date”:    “2021-09-14”
+  “user_id”:         “xxyy-abba”
+}
+```
+
+### Response
+
+#### Http Status
+| Code | Status                 | When To Use |
+| :--- | :---                   | :--- |
+| 201  | Created                | The resource was created. The Response Location HTTP header SHOULD be returned to indicate where the newly created resource is accessible. |
+| 202  | Accepted               | Is used for asynchronous processing to indicate that the server has accepted the request but the result is not available yet. The Response Location HTTP header may be returned to indicate where the created resource will be accessible. |
+| 400  | Bad Request            | The server cannot process the request (such as malformed request syntax, size too large, invalid request message framing, or deceptive request routing, invalid values in the request) For example, the API requires a numerical identifier and the client sent a text value instead, the server will return this status code. |
+| 401  | Unauthorized           | The request could not be authenticated. |
+| 403  | Forbidden              | The request was authenticated but it is not authorized to access the resource. |
+| 405  | Not Allowed            | The method is not implemented for this resource. The response may include an Allow header containing a list of valid methods for the resource. |
+| 415  | Unsupported Media Type | This status code indicates that the server refuses to accept the request because the content type specified in the request is not supported by the server. |
+| 422  | Unprocessable Entity   | This status code indicates that the server received the request but it did not fulfil the requirements of the back end. An example is a mandatory field was not provided in the payload. |
+| 500  | Internal Server Error  | An internal server error. |
+
+#### Headers
+| Header      | Definition |
+| :---        | :---       |
+| Accept Type | application/json |
+| Api Version | {major}.{minor}.{patch} |
+| requestId   | Unique identifier sent in the client request for idempotency |
+
+#### Body
+The body of the create resource action always returns the resource that was created 
+and it will be under the resource name section for the response body. For example, 
+a new account will be in the “account” field in the response and each new resource 
+will generate a unique Id and add createdAt and updatedAt timestamps to the 
+resource as shown in the example below:
+
+```
+{
+  “account”: {
+    “id”:                “abcxwz”,
+    “name”:              “My Checking”,
+    “type:               “checking”,
+    “status”:            “active”,
+    “account_number”:    “123456789012”,
+    “routing_number”:    “123456789”,
+    “posted_balance”:    0,
+    “available_balance”: 0,
+    “currency”:          “USD”,
+    “user_id”:           “xxyy-abba”,
+    “opening_date”:      “09-14-2021”,
+    “created_at”:        “2021-09-14T22:35:56.560Z”,
+    “updated_at”:        “2021-09-14T22:35:56.560Z”,
+  }
+}
+```
+
+Having the resource name in the response makes it easier for developers
+to parse the response. For example in javascript a developer can access 
+the new account using the code:
+
+```javascript
+const { account }   = response.body
+console.log(`Account number=${account.number}, balance=${account.available_balance})
+```
+
+## Fetch List of Resources: GET /api/v1/{resources}
+The ```GET /api/v1/{resources}``` returns an array of all the resources and 
+also a metadata section that provides detail about paging the results.
+
+### Request
+
+#### Query Parameters
+The ```GET /api/v1/{resources}``` supports a set of standard query parameters that 
+allows users to control the data returned by the API. The user can specify the 
+following parameters:
+
+##### page_size
+Max number of resources to return, the API should set a default page_size so 
+that APIs do not return an infinite amount of resources.
+
+##### page
+The page of the data to return and the default is 1. For example, if the 
+page_size = 25 and page = 2 then the API returns records 25 - 49.
+
+##### sort_field
+TODO
+
+##### sort
+TODO
+
+##### fields
+TODO
+
+#### Headers
+| Header       | Definition |
+| :---         | :--- |
+| Content Type | application/json |
+| Authorize    | Bearer {JWT} |
+| requestID    | Unique Id for logging the request |
+
+#### Body
+NA
+
+### Response
+
+#### Http Status
+| Code | Status                 | When To Use |
+| :--- | :---                   | :--- | 
+| 200  | Ok                     | The request was successfully processed. |
+| 401  | Unauthorized           | The request could not be authenticated. |
+| 403  | Forbidden              | The request was authenticated but it is not authorized to access the resource. |
+| 405  | Not Allowed            | The method is not implemented for this resource. The response may include an Allow header containing a list of valid methods for the resource. |
+| 500  | Internal Server Error  | An internal server error. |
 
 
+#### Headers
+| Header      | Definition |
+| :---        | :---       |
+| Accept Type | application/json |
+| Api Version | {major}.{minor}.{patch} |
+| requestId   | Unique identifier sent in the client request for logging |
+
+#### Body
+The response body to get a list of resources returns the resources defined by 
+the plural resource name and an array of resources. In the example below the 
+resources are defined by the “transactions” label. The response also includes 
+data needed to define pagination in the “metadata” section.
+
+````
+"transactions": [
+  {
+    "id":           "613114c870e958ee3289fd42",
+    "status":       "Posted",
+    "type":         "TransferCredit",
+    "description":  "Bartoletti - Moore",
+    "date":         "2021-09-02T05:49:49.201Z",
+    "currency":     "USD",
+    "amount":       "595",
+    "account_id":   "613114c670e958"
+  },
+  {
+    "id":           "613114c870e958ee3289fd3e",
+    "status":       "Posted",
+    "type":         "CashWithdrawal",
+    "description":  "Buckridge, Bots",
+    "date":         "2021-09-02T04:13:43.537Z",
+    "currency":     "USD",
+    "amount":       "945",
+    "account_id":   "613114c670e958"
+  },
+  ...
+],
+"metadata": {
+  "pagination": {
+    "total_count":  250,
+    "page_size":    20,
+    "offset":        4
+  }
+},
+````
+
+Organizing the response by the plural resource makes it easy for a 
+developer to process the response and the pagination data. For 
+example, to process all the transactions in the response in JavaScript:
+
+```javascript
+const { transactions }  = response.body
+const { pagination }    = response.body.metadata
+
+transactions.forEach( (transaction) => {
+  console.log(`Transaction id=${transaction.id}, amount=${transaction.amount})
+})
+```
+
+## Fetch Single Resource: GET /api/v1/{resources}/{resource_id}
+The ```GET /api/v1/{resources}/{resource_id}``` returns a single resource. If 
+the resource is not found then it returns a 404 Not Found error.
+
+### Request
+
+#### Query Parameters
+NA
+
+#### Headers
+| Header       | Definition |
+| :---         | :--- |
+| Content Type | application/json |
+| Authorize    | Bearer {JWT} |
+| requestID    | Unique Id for logging the request |
+
+#### Body
+NA
+
+### Response
+
+#### Http Status
+| Code | Status                 | When To Use |
+| :--- | :---                   | :--- | 
+| 200  | Ok                     | The request was successfully processed. |
+| 401  | Unauthorized           | The request could not be authenticated. |
+| 403  | Forbidden              | The request was authenticated but it is not authorized to access the resource. |
+| 405  | Not Allowed            | The method is not implemented for this resource. The response may include an Allow header containing a list of valid methods for the resource. |
+| 500  | Internal Server Error  | An internal server error. |
 
 
+#### Headers
+| Header      | Definition |
+| :---        | :---       |
+| Accept Type | application/json |
+| Api Version | {major}.{minor}.{patch} |
+| requestId   | Unique identifier sent in the client request for logging |
+
+#### Body
+```
+“account”: {
+  “id”:                “abcxwz”,
+  “name”:              “My Checking”,
+  “type:               “checking”,
+  “status”:            “active”,
+  “account_number”:    “123456789012”,
+  “routing_number”:    “123456789”,
+  “posted_balance”:    0,
+  “available_balance”: 0,
+  “currency”:          “USD”,
+  “user_id”:           “xxyy-abba”,
+  “opening_date”:      “09/14/2021”,
+  “created_at”:        “2021-09-14T22:35:56.560Z”,
+  “updated_at”:        “2021-09-14T22:35:56.560Z”,
+}
+```
+
+Organizing the response by the resource makes it easy for a developer 
+to process the response. For example to process the transaction in 
+JavaScript:
+
+```javascript
+const { transaction } = response.body
+console.log(`Transaction id=${transaction.id} amount=${transaction.amount}`)
+```
+
+## Update Resource Attributes: PATCH /api/v1/{resources}/{resource_id}
+The ```PATCH /api/v1/{resources}/{resource_id}``` updates a resource and 
+returns the updated resource in the response. Another option is to return
+the resource_id of the updated resource instead of the whole resource.
+
+PATCH is used when updating some of the fields of a resource and it is
+not idempotent.
+
+### Request
+
+#### Query Parameters
+
+##### resource  
+If set to true return the updated resource otherwise return the updated 
+resource id. API can set the default to true or false.
+
+#### Headers
+| Header       | Definition |
+| :---         | :--- |
+| Content Type | application/json |
+| Authorize    | Bearer {JWT} |
+| requestID    | Unique identifier sent in the client request for idempotency. |
+
+#### Body
+The following example code updates the posted_balance and available_balance
+for an Account.
+
+```
+{
+  posted_balance:     90.00
+  available_balance:  90.00
+}
+```
+
+### Response
+
+#### Http Status
+| Code | Status                 | When To Use |
+| :--- | :---                   | :--- | 
+| 200  | Ok                     | The request was successfully processed. |
+| 400  | Bad Request            | The server cannot process the request (such as malformed request syntax, size too large, invalid request message framing, or deceptive request routing, invalid values in the request). For example, the API requires a numerical identifier and the client sends a text value instead, the server will return this status code. |
+| 401  | Unauthorized           | The request could not be authenticated. |
+| 403  | Forbidden              | The request was authenticated but it is not authorized to access the resource. |
+| 405  | Not Allowed            | The method is not implemented for this resource. The response may include an Allow header containing a list of valid methods for the resource. |
+| 500  | Internal Server Error  | An internal server error. |
 
 
+#### Headers
+| Header      | Definition |
+| :---        | :---       |
+| Accept Type | application/json |
+| Api Version | {major}.{minor}.{patch} |
+| requestId   | Unique identifier sent in the client request for idempotency. |
+
+#### Body
+There are 2 alternatives when building the PATCH response. The first alternative
+is to return the resource_id with the updated_at timestamp that validates the
+resource was updated as shown below:
+
+```
+{
+  id:         "abcxwz",
+  updated_at: "2022-01-14T22:35:56.560Z"
+}
+```
+
+The second option is to return the updated resource as shown below:
+
+```
+{
+  “account”: {
+    “id”:                “abcxwz”,
+    “name”:              “My Checking”,
+    “type:               “checking”,
+    “status”:            “active”,
+    “account_number”:    “123456789012”,
+    “routing_number”:    “123456789”,
+    “posted_balance”:    90.00,
+    “available_balance”: 90.00,
+    “currency”:          “USD”,
+    “user_id”:           “xxyy-abba”,
+    “opening_date”:      “09/14/2021”,
+    “created_at”:        “2021-09-14T22:35:56.560Z”,
+    “updated_at”:        “2022-01-14T22:35:56.560Z”,
+  }
+}
+```
+
+## Update Resource: PUT /api/v1/{resources}/{resource_id}
+The ```PUT /api/v1/{resources}/{resource_id}``` replaces an existing
+resource with a new resource and requires that all of the resource 
+fields are included in the request. Unlike a PATCH request, a PUT 
+request is idempotent.
+
+### Request
+
+#### Query Parameters
+
+##### resource  
+If set to true return the updated resource otherwise return the updated 
+resource id. API can set the default to true or false.
+
+#### Headers
+| Header       | Definition |
+| :---         | :--- |
+| Content Type | application/json |
+| Authorize    | Bearer {JWT} |
+| requestID    | Unique identifier sent in the client request for logging. |
+
+#### Body
+The following example code updates a user's address when the user moves. For the
+PUT request all of the address fields are required in the request.
+
+```
+{
+  "name":   "John Doe",
+  "line1":  "One Market St.",
+  "line2":  "",
+  "city":   "San Francisco",
+  "state":  "CA",
+  "zip":    "94105"
+}
+```
+
+### Response
+
+#### Http Status
+| Code | Status                 | When To Use |
+| :--- | :---                   | :--- | 
+| 200  | Ok                     | The request was successfully processed. |
+| 400  | Bad Request            | The server cannot process the request (such as malformed request syntax, size too large, invalid request message framing, or deceptive request routing, invalid values in the request). For example, the API requires a numerical identifier and the client sends a text value instead, the server will return this status code. |
+| 401  | Unauthorized           | The request could not be authenticated. |
+| 403  | Forbidden              | The request was authenticated but it is not authorized to access the resource. |
+| 405  | Not Allowed            | The method is not implemented for this resource. The response may include an Allow header containing a list of valid methods for the resource. |
+| 500  | Internal Server Error  | An internal server error. |
 
 
+#### Headers
+| Header      | Definition |
+| :---        | :---       |
+| Accept Type | application/json |
+| Api Version | {major}.{minor}.{patch} |
+| requestId   | Unique identifier sent in the client request for loggin. |
+
+#### Body
+There are 2 alternatives when building the PUT response. The first alternative
+is to return the resource_id with the updated_at timestamp that validates the
+resource was updated as shown below:
+
+```
+{
+  id:         "abcxwz",
+  updated_at: "2022-01-14T22:35:56.560Z"
+}
+```
+
+The second option is to return the updated resource as shown below:
+
+```
+{
+  “address”: {
+    “id”:           “abcxwz”,
+    "name":         "John Doe",
+    "line1":        "One Market St.",
+    "line2":        "",
+    "city":         "San Francisco",
+    "state":        "CA",
+    "zip":          "94105"
+    “created_at”:   “2021-09-14T22:35:56.560Z”,
+    “updated_at”:   “2022-01-14T22:35:56.560Z”,
+  }
+}
+```
+
+## Delete a Resource: DELETE /api/v1/{resources}/{resource_id}
+The ```DELETE /api/v1/{resources}/{resource_id}``` deletes the resource 
+specified by the resource_id and returns an empty message with a Http 
+response status of 204.
+
+### Request
+
+#### Query Parameters
+NA
+
+| Header       | Definition |
+| :---         | :--- |
+| Content Type | application/json |
+| Authorize    | Bearer {JWT} |
+| requestID    | Unique identifier sent in the client request for logging. |
+
+#### Body
+NA
+
+### Response
+
+#### Http Status
+| Code | Status                 | When To Use |
+| :--- | :---                   | :--- | 
+| 204  | No Content             | The server successfully processed the request and is not returning any content. |
+| 400  | Bad Request            | The server cannot process the request (such as malformed request syntax, size too large, invalid request message framing, or deceptive request routing, invalid values in the request). For example, the API requires a numerical identifier and the client sends a text value instead, the server will return this status code. |
+| 401  | Unauthorized           | The request could not be authenticated. |
+| 403  | Forbidden              | The request was authenticated but it is not authorized to access the resource. |
+| 405  | Not Allowed            | The method is not implemented for this resource. The response may include an Allow header containing a list of valid methods for the resource. |
+| 500  | Internal Server Error  | An internal server error. |
 
 
+#### Headers
+| Header      | Definition |
+| :---        | :---       |
+| Accept Type | application/json |
+| Api Version | {major}.{minor}.{patch} |
+| requestId   | Unique identifier sent in the client request for loggin. |
 
-
-
-
-
-
+#### Body
+NA
