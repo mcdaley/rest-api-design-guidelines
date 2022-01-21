@@ -802,7 +802,7 @@ Below is an example error message:
     “request_id”: “86032cbe-a804-4c3b-86ce-ec3041e3effc”,
     “code”:       1101,
     “resource”:   “Accounts”,
-    “name”:       “Resource Not Found”,
+    “title”:      “Resource Not Found”,
     “message”:    “Account ID “xys786” is not found”
   }]
 }
@@ -947,14 +947,21 @@ that APIs do not return an infinite amount of resources.
 The page of the data to return and the default is 1. For example, if the 
 page_size = 25 and page = 2 then the API returns records 25 - 49.
 
-##### sort_field
-TODO
+##### sort_by
+Specify the sort fields and order. For example to sort by descending date and
+ascending amount:
 
-##### sort
-TODO
+```
+sort_by=date:desc,amount:asc
+```
 
 ##### fields
-TODO
+Filter the fields returned in the result. For example to return only the date,
+description, and amount for all transactions:
+
+```
+fields=date,description,amount
+```
 
 #### Headers
 | Header       | Definition |
