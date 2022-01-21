@@ -355,12 +355,13 @@ Use the 3 character ISO definitions for country codes, i.e., USA, CAN, GER.
 For all enumerated values the APIs will define human understandable string 
 definitions for request, response, and URI parameters instead of numeric 
 values. For example account type would equal ‘Checking’ or ‘Savings’ instead 
-of 1001 or 1002.
+of 1001 or 1002. The application is responsible for mapping the human readable
+enum strings to their corresponding codes if that is how the application stores
+the enumerated values.
 
 ## Addresses
-An address is a system resource and will only support US addresses for the 
-initial product launch. The following format is proposed based on the 
-lob.com APIs which is a direct mail service and has the following properties:
+An address is a system resource and the following format can be used for
+US addresses and is based on lob.com APIs which is a direct mail service:
 
 | Field   | Required | Format                         | Description |
 | :---    | :---     | :---                           | :--- |
@@ -544,10 +545,13 @@ standard URI query parameters.
 
 ## Pagination
 Pagination is the process of returning a large set of results in chunks (or pages) 
-to reduce the amount of information that is sent with each response. The following 
-query parameters are used to support pagination.
+to reduce the amount of information that is sent with each response. Pagination 
+can be implemented using offset-based or cursor-based pagination. 
 
-### page
+### Offset Pagination
+The following query parameters are used to support offset-pagination.
+
+#### page
 The page that the user wants to return, for example:
 
 ```
@@ -556,7 +560,7 @@ page=1
 
 Where the default page is 1.
 
-### page_size
+#### page_size
 The number of results per page the user wants to return, for example:
 
 ```
@@ -564,6 +568,10 @@ page_size=10
 ```
 
 Where the default page_size is 25 and the maximum is 100.
+
+### Cursor Pagination
+In cursor-based pagination the API response contains a cursor that can be
+used to retrieve the next page of results.
 
 ## Sorting
 Sorting allows the user to select the order of the collection of resources 
@@ -582,6 +590,21 @@ the following query parameters:
 ```
 ?sort_fields=date,name&sort=desc
 ```
+
+### sort_by
+If it is required to sort by multiple fields in ascending and descending order
+then the sort_by option can be used. To sort by descending date and ascending 
+name then the following options can be used:
+
+```
+sort_by=-date,+name
+
+or
+
+sort_by=date:desc,name:asc
+```
+
+If **asc** is the default sort order then the "+" and "asc" are not required.
 
 ## Filtering
 Filtering is used to control which resources and which fields in the resource 
@@ -666,8 +689,8 @@ Version of the API that processed the request and will be in the MAJOR.MINOR.PAT
 ## HTTP Response Codes
 The API must return standard HTTP response codes as defined in 
 [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) and 
-the possible response codes for each type of request are defined in the  
-REST API Standard Request and Responses section of the document.
+the possible response codes for each type of request are defined in the REST API 
+Standard Request and Responses section of the document.
 
 ## Response Payload
 The RESTful APIs will return JSON responses and the following sections show 
@@ -762,11 +785,11 @@ following fields:
 
 | Error Attribute | Mandatory | Description |
 | :---            | :---      | :--- |
-| id              | Optional  | Unique identifier for the specific error that can be searched for in the application log files. |
+| request_id      | Mandatory | Unique API request identifier for the specific error that can be searched for in the application log files. |
 | httpStatus      | Optional  | HTTP Status of the response. |
 | code            | Mandatory | An application specific numeric error code |
-| name            | Mandatory | The error’s name |
 | resource        | Mandatory | The resource where the error occurred. |
+| title           | Mandatory | The error’s title |
 | message         | Mandatory | Text that specifies the error, for example **Account Id “456789” is not found**. |
 | stack           | Optional  | A stack trace of the error that can be used in development and testing. |
 
@@ -776,7 +799,7 @@ Below is an example error message:
 {
   “errors”: [{
     “httpStatus”: 404,
-    “id”:         “86032cbe-a804-4c3b-86ce-ec3041e3effc”,
+    “request_id”: “86032cbe-a804-4c3b-86ce-ec3041e3effc”,
     “code”:       1101,
     “resource”:   “Accounts”,
     “name”:       “Resource Not Found”,
@@ -1083,16 +1106,14 @@ console.log(`Transaction id=${transaction.id} amount=${transaction.amount}`)
 ## Update Resource Attributes: PATCH /api/v1/{resources}/{resource_id}
 The ```PATCH /api/v1/{resources}/{resource_id}``` updates a resource and 
 returns the updated resource in the response. Another option is to return
-the resource_id of the updated resource instead of the whole resource.
-
-PATCH is used when updating some of the fields of a resource and it is
-not idempotent.
+the resource_id of the updated resource instead of the whole resource. PATCH 
+is used when updating some of the fields of a resource and it is not idempotent.
 
 ### Request
 
 #### Query Parameters
 
-##### resource  
+##### resource
 If set to true return the updated resource otherwise return the updated 
 resource id. API can set the default to true or false.
 
