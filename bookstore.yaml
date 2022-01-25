@@ -1,0 +1,83 @@
+# -----------------------------------------------------------------------------
+# bookstore.yaml
+# -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# Example API
+#
+# Create APIs to show Open API specification and guidelines
+#   - User signup and login APIs
+#   - POST/GET/PATCH/DELETE /books (and {bookId})
+#   - 
+#
+# POST    /books
+# GET     /books?author=dickens&tag=fiction
+# GET     /books/{bookId}
+#
+# POST    /carts                        OR POST /users/{userId}/carts
+# POST    /carts/{cartId}/cart_item
+# PUT     /carts/{cartId}/cart_item     OR PUT  /users/{userId}/carts/{cartId}/cart_item
+# GET     /carts/{cartId}
+#
+# POST    /orders
+# GET     /orders
+# GET     /orders/{orderId}
+# POST    /orders/{orderId}/order-item
+# PATCH   /orders/{orderId}/order-items/{orderItemId}
+# DELETE  /orders/{orderId}/order-items/{orderItemId} 
+# GET     /orders/{orderId}/order-items
+
+user|customer: 
+  id:         uuid
+  first_name: string
+  last_name:  string
+  email:      string
+  address:    address
+
+book:
+  id:         uuid
+  title:      string
+  author:     author/string
+  isbn:       string
+  genre:      genres
+  price:      float
+
+genre:
+  - fantasy 
+  - science_fiction 
+  - mystery
+  - thriller 
+  - romance 
+  - biography
+  - comedy
+
+author:
+  id:         uuid
+  first_name: string
+  last_name:  string
+
+cart:
+  id:         uuid
+  user_id:    user.id
+  cart_items:
+    - cart_item
+  total:      float
+
+cart_item:
+  id:         uuid
+  cart_id:    cart.id
+  book_id:    book.id
+  quantity:   integer
+  amount:     float
+
+order:
+  id:             uuid
+  cart:           cart_id
+  order_datetime: datetime 
+  ship_datetime:  datetime
+  status:         Pending, Failed, Processing, Shipped, Delivered
+  total:          float
+
+inventory:
+  book_id:    book.id
+  total:      integer

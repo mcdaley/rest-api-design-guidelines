@@ -1,0 +1,39 @@
+# -----------------------------------------------------------------------------
+# taxi.yaml
+# -----------------------------------------------------------------------------
+
+##
+# Example Rideshare API
+#
+# Resources:
+#   Passenger       => First Name, Last Name, Address, Mobile, Email
+#   Driver          => First Name, Last Name, Photo, Mobile
+#   Trip            => Passenger, Driver, Pickup, Destination, Status, Amount
+#   Payment-Method  => Card Number, Expiration Date, Name, CVC
+#   Address         => Street, City, State, Zip
+#
+# Endpoints:
+#   POST    /passenger/{passengerId}/payment-methods
+#   PUT     /passenger/{passengerId}/payment-methods/{paymentMethodId}
+#   DELETE  /passenger/{passengerId}/payment-methods/{paymentMethodId}
+#   POST    /passenger/{passengerId}/address
+#   PUT     /passenger/{passengerId}/address/{addressId}
+#   DELETE  /passenger/{passengerId}/address/{addressId}
+#
+#   POST    /trips                  => Passenger, Driver, Pickup, Destination, Return Cost & Driver
+#   GET     /trips/
+#   GET     /trips/{tripId}
+#   PUT     /trips/{tripId}         => Change Driver, Pickup, Destination
+#   DELETE  /trips/{tripId}         => Passenger cancels trips request
+#
+#   POST    /trips/{tripId}/pickup|dropoff
+#   POST    /trips/{tripId}/pay     => Passenger pays for the trips
+#   POST    /trips/{tripId}/review  => Passenger reviews the ride
+#
+#   POST    /drivers/{driverId}/payments
+#   GET     /drivers/{driverId}/payments
+#   GET     /drivers/{driverId}/payments/{paymentId}
+#
+# Notifications:
+#   
+#
