@@ -1,0 +1,12 @@
+# -----------------------------------------------------------------------------
+# openapi/components/parameters/trip-id.param.yaml
+# -----------------------------------------------------------------------------
+name:     tripId
+in:       path
+required: true
+style:    simple
+explode:  false
+schema:
+  type:     string
+  format:   uuid
+  example:  5de2cf6a-40c8-4961-8911-cc10e6a59946

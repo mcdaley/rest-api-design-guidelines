@@ -1,0 +1,21 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/trip/patch-trip.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Defines the trip fields that can be updated with a PATCH request.
+properties:
+  driver_id:
+    type:     string 
+    format:   uuid
+    example:  1ade3c8b-f30d-4bca-8cd8-cd123d4906e9
+  pickup_location:
+    $ref:     '../address/new-address.schema.yaml'
+  dropoff_location:
+    $ref:     '../address/new-address.schema.yaml'
+  status:
+    $ref:     '../lib/trip-status.schema.yaml'
+  amount:
+    type:     number
+    example:  25.00
+

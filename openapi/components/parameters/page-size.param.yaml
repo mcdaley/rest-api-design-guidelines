@@ -1,0 +1,9 @@
+# -----------------------------------------------------------------------------
+# openapi/components/parameters/page-size.param.yaml
+# -----------------------------------------------------------------------------
+name:         page_size
+in:           query
+schema:
+  type:     integer
+  minimum:  5
+  default:  25

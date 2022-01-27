@@ -20,19 +20,18 @@
 #   PUT     /passenger/{passengerId}/address/{addressId}
 #   DELETE  /passenger/{passengerId}/address/{addressId}
 #
-#   POST    /trips                  => Passenger, Driver, Pickup, Destination, Return Cost & Driver
-#   GET     /trips/
-#   GET     /trips/{tripId}
-#   PUT     /trips/{tripId}         => Change Driver, Pickup, Destination
-#   DELETE  /trips/{tripId}         => Passenger cancels trips request
+#   [x] POST    /trips                  => Passenger, Driver, Pickup, Destination, Return Cost & Driver
+#   [x] GET     /trips
+#   [x] GET     /trips/{tripId}
+#   [x] PATCH   /trips/{tripId}         => Change Driver, Pickup, Destination
+#   [x] DELETE  /trips/{tripId}         => Passenger cancels trips request
 #
-#   POST    /trips/{tripId}/pickup|dropoff
-#   POST    /trips/{tripId}/pay     => Passenger pays for the trips
+#   [x] POST    /trips/{tripId}/pickup|dropoff
+#   [x] POST    /trips/{tripId}/pay     => Passenger pays for the trips
 #   POST    /trips/{tripId}/review  => Passenger reviews the ride
 #
-#   POST    /drivers/{driverId}/payments
-#   GET     /drivers/{driverId}/payments
-#   GET     /drivers/{driverId}/payments/{paymentId}
+#   [x] GET     /drivers/{driverId}/trips
+#   [x] GET     /drivers/{driverId}/trips/{tripId}
 #
 # Notifications:
 #   

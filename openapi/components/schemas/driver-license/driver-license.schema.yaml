@@ -1,0 +1,16 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/driver-license/driver-license.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Defines a saved driver's license so that taxi app that verifies a driver 
+  has a valid license.
+required:
+  - id
+allOf:
+  - $ref: './new-driver-license.schema.yaml'
+properties:
+  id:
+    type:     string
+    format:   uuid
+    example:  671c272f-370f-40f9-b863-7531aa696b4a

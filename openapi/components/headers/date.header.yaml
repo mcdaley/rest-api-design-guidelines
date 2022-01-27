@@ -1,0 +1,11 @@
+# -----------------------------------------------------------------------------
+# openapi/components/headers/date.header.yaml
+# -----------------------------------------------------------------------------
+name:         Date
+description:  Date and time which in UTC when the message was originated.
+in:           header
+style:        simple
+explode:      false
+schema:
+  type:   string
+  format: date-time

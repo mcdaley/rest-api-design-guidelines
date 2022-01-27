@@ -1,0 +1,32 @@
+# -----------------------------------------------------------------------------
+# openapi/paths/passengers/passengers.openapi.yaml
+# -----------------------------------------------------------------------------
+
+# POST /api/v1/passengers
+post:
+  tags:
+    - Passenger
+  operationId:  createPassenger
+  summary:      Create a Passenger
+  description:  >
+    Creates a new passenger account that can request rides using the taxi app.
+  parameters:
+    - $ref: '../../components/headers/request-id.header.yaml'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref:   '../../components/schemas/passenger/new-passenger.schema.yaml'
+    description:  >
+      Create a rideshare app passenger.
+  responses:
+    '201':
+      description: "OK"
+      content:
+        application/json:
+          schema:
+            properties:
+              passenger:
+                $ref: '../../components/schemas/passenger/passenger.schema.yaml'
+    '400': 
+      $ref: '../../components/responses/400.bad-request.response.yaml'

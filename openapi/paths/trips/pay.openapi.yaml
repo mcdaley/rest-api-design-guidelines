@@ -1,0 +1,37 @@
+# -----------------------------------------------------------------------------
+# openapi/paths/trips/pay.openapi.yaml
+# -----------------------------------------------------------------------------
+
+# POST /api/v1/trips/{tripId}/pay
+post: 
+  tags:
+    - Trip
+  operationId:  payForTrip
+  summary:      Pay for Trip
+  description:  >
+    Passenger pays for the ride after being dropped off at the destination. 
+    The taxi app charges the passenger's payment method for the amount of the
+    ride and updates the status of the ride to **Paid**.
+  parameters:
+    - $ref:     '../../components/parameters/trip-id.param.yaml'
+    - $ref:     '../../components/headers/request-id.header.yaml'
+    - $ref:     '../../components/headers/passenger-id.header.yaml'
+    - $ref:     '../../components/headers/date.header.yaml'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/payment/new-payment.schema.yaml'
+  responses:
+    '201':
+      description: 'OK'
+      content:
+        application/json:
+          schema:
+            properties:
+              payment:
+                $ref: '../../components/schemas/payment/payment.schema.yaml'
+    '400':
+      $ref: '../../components/responses/400.bad-request.response.yaml'
+    '404':
+      $ref: '../../components/responses/404.not-found.response.yaml'

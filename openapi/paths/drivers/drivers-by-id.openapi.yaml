@@ -1,0 +1,73 @@
+# -----------------------------------------------------------------------------
+# openapi/paths/drivers/drivers-by-id.openapi.yaml
+# -----------------------------------------------------------------------------
+
+# GET /api/v1/drivers/{driverId}
+get:
+  tags:
+    - Driver
+  operationId:  getDriver
+  summary:      Retrieve a Driver
+  description:  Retrieve details about a driver.
+  parameters:
+    - $ref:     '../../components/parameters/driver-id.param.yaml'
+    - $ref:     '../../components/headers/request-id.header.yaml'
+  responses:
+    '200':
+      description: 'OK'
+      content:
+        application/json:
+          schema:
+            properties:
+              driver:
+                $ref: '../../components/schemas/driver/driver.schema.yaml'
+    '404': 
+      $ref: '../../components/responses/404.not-found.response.yaml'
+
+# PUT /api/v1/drivers/{driverId}
+put:
+  tags:
+    - Driver
+  operationId:  updateDriver
+  summary:      Update a Driver Profile.
+  description:  >
+    Update the driver profile. Need to call the API with all of the driver
+    fields including the fields that are and are not being updated because items
+    it is a PUT request.
+  parameters:
+    - $ref:     '../../components/parameters/driver-id.param.yaml'
+    - $ref:     '../../components/headers/request-id.header.yaml'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/driver/new-driver.schema.yaml'
+  responses:
+    '200':
+      description:  'OK'
+      content:
+        application/json:
+          schema:
+            properties:
+              account:
+                $ref: '../../components/schemas/driver/driver.schema.yaml'
+    '404': 
+      $ref: '../../components/responses/404.not-found.response.yaml'
+
+# DELETE /api/v1/drivers/{driverId}
+delete: 
+  tags:
+    - Driver
+  operationId:  deleteDriver
+  summary:      Delete a Driver
+  description:  >
+    Delete the driver's account. After the account is deleted the driver
+    is no longer able to drive taxi app passengers.
+  parameters:
+    - $ref:     '../../components/parameters/driver-id.param.yaml'
+    - $ref:     '../../components/headers/request-id.header.yaml'
+  responses:
+    '204':
+      description: 'OK'
+    '404': 
+      $ref: '../../components/responses/404.not-found.response.yaml'

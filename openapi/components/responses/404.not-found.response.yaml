@@ -1,0 +1,12 @@
+# -----------------------------------------------------------------------------
+# openapi/components/responses/404.not-found.response.yaml
+# -----------------------------------------------------------------------------
+description: >
+  Not Found
+content:
+  application/json:
+    schema:
+      $ref:     '../schemas/error/error.schema.yaml'
+    example:
+      code:     404
+      message:   Resource Not Found

@@ -1,0 +1,77 @@
+# -----------------------------------------------------------------------------
+# openapi/paths/trips/trips-by-id.openapi.yaml
+# -----------------------------------------------------------------------------
+
+# GET /api/v1/trips/{tripId}
+get:
+  tags:
+    - Trip
+  operationId:  getTrip
+  summary:      Retrieve a Trip
+  description:  Retrieve details about a trip.
+  parameters:
+    - $ref:     '../../components/parameters/trip-id.param.yaml'
+    - $ref:     '../../components/headers/request-id.header.yaml'
+    - $ref:     '../../components/headers/date.header.yaml'
+  responses:
+    '200':
+      description: 'OK'
+      content:
+        application/json:
+          schema:
+            properties:
+              trip:
+                $ref: '../../components/schemas/trip/trip.schema.yaml'
+    '404': 
+      $ref: '../../components/responses/404.not-found.response.yaml'
+
+# PATCH /api/v1/trips/{tripId}
+patch:
+  tags:
+    - Trip
+  operationId:  updateTrip
+  summary:      Update a Trip
+  description:  >
+    Update a trip's driver, pickup location, or dropoff location. If the
+    pickup or dropoff location are changed then the taxis app calculates
+    a new cost for the ride. 
+  parameters:
+    - $ref:     '../../components/parameters/trip-id.param.yaml'
+    - $ref:     '../../components/headers/request-id.header.yaml'
+    - $ref:     '../../components/headers/date.header.yaml'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/trip/patch-trip.schema.yaml'
+  responses:
+    '200':
+      description: 'OK'
+      content:
+        application/json:
+          schema:
+            properties:
+              trip:
+                $ref: '../../components/schemas/trip/trip.schema.yaml'
+    '404': 
+      $ref: '../../components/responses/404.not-found.response.yaml'
+
+
+# DELETE /api/v1/trips/{tripId}
+delete:
+  tags:
+    - Trip 
+  operationId:  deleteTrip
+  summary:      Delete a Trip 
+  description:  >
+    Cancels a trip requested by a Passenger. The trip can only be Cancelled
+    before the Passenger has been picked up.
+  parameters:
+    - $ref:     '../../components/parameters/trip-id.param.yaml'
+    - $ref:     '../../components/headers/request-id.header.yaml'
+    - $ref:     '../../components/headers/date.header.yaml'
+  responses:
+    '204':
+      description: 'OK'
+    '404': 
+      $ref: '../../components/responses/404.not-found.response.yaml'

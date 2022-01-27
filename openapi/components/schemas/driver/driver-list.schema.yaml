@@ -1,0 +1,9 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/driver/driver-list.schema.yaml
+# -----------------------------------------------------------------------------
+type: object
+properties:
+  drivers: 
+    type: array
+    items:
+      $ref: './driver.schema.yaml'

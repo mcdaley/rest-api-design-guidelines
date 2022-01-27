@@ -1,0 +1,21 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/passenger/update-passenger.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Passenger fields that can be updated by the user.
+properties:
+  first_name:
+    type:     string
+    example:  John
+  last_name:
+    type:     string
+    example:  Doe
+  mobile:
+    type:     string
+    pattern:  '^\d{3}-\d{3}-\d{4}$'
+    example:  415-894-1234
+  email:
+    type:     string
+    format:   email 
+    example:  john.doe@email.com

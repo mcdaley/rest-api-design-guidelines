@@ -1,0 +1,12 @@
+# -----------------------------------------------------------------------------
+# openapi/components/lib/trip-status.schema.yaml
+# -----------------------------------------------------------------------------
+type:     string
+enum:
+  - Pending
+  - Accepted
+  - InProgress
+  - Cancelled
+  - Completed
+  - Paid
+example:  Accepted

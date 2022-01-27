@@ -1,0 +1,29 @@
+# -----------------------------------------------------------------------------
+# openapi/paths/trips/dropoff.openapi.yaml
+# -----------------------------------------------------------------------------
+
+# POST /api/v1/trips/{tripId}/dropoff
+post: 
+  tags:
+    - Trip
+  operationId:  dropoffPassenger
+  summary:      Dropoff a Passenger
+  description:  >
+    Driver updates the status of the ride from **In Progrss** to **Completed**
+    when the driver drops off the passenger at the destination. The API provides
+    a short cut to updating the trip.
+  parameters:
+    - $ref:     '../../components/parameters/trip-id.param.yaml'
+    - $ref:     '../../components/headers/request-id.header.yaml'
+    - $ref:     '../../components/headers/date.header.yaml'
+  responses:
+    '201':
+      description: 'OK'
+      content:
+        application/json:
+          schema:
+            properties:
+              trip:
+                $ref: '../../components/schemas/trip/trip.schema.yaml'
+    '404':
+      $ref: '../../components/responses/404.not-found.response.yaml'

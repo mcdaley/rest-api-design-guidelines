@@ -1,0 +1,28 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/lib/pagination.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Pagination data for collection
+properties:
+  pagination:
+    type: object
+    required:
+      - page 
+      - page_size
+      - total_count
+    properties:
+      page: 
+        type:     number 
+        format:   integer 
+        default:  1
+        example:  2
+      page_size:
+        type:     number 
+        format:   integer 
+        default:  20
+        example:  25
+      total_count:
+        type:     number
+        format:   integer 
+        example:  155

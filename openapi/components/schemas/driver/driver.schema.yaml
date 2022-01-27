@@ -1,0 +1,18 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/driver/driver.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Defines a valid driver that is able to pickup and driver taxi app passengers.
+required:
+  - id
+allOf:
+  - $ref: './new-driver.schema.yaml'
+properties:
+  id:
+    type:     string
+    format:   uuid
+    example:  d68825b3-830c-44f8-953e-a8b5cd943aa8
+  driver_license:
+    type:     object 
+    $ref:     '../driver-license/driver-license.schema.yaml'

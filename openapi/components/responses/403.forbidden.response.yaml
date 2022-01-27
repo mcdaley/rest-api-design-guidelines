@@ -1,0 +1,12 @@
+# -----------------------------------------------------------------------------
+# openapi/components/responses/403.forbidden.response.yaml
+# -----------------------------------------------------------------------------
+description: >
+  Forbidden
+content:
+  application/json:
+    schema:
+      $ref:     '../schemas/error/error.schema.yaml'
+    example:
+      code:     403
+      message:  Access to resource is forbidden

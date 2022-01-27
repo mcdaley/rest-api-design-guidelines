@@ -1,0 +1,59 @@
+# -----------------------------------------------------------------------------
+# openapi/paths/trips/trips.openapi.yaml
+# -----------------------------------------------------------------------------
+
+# POST /api/v1/trips
+post:
+  tags:
+    - Trip 
+  operationId:  createTrip 
+  summary:      Create a Trip 
+  description:  >
+    Creates a new trip when a user requests a ride using the taxi app.
+  parameters:
+    - $ref: '../../components/headers/request-id.header.yaml'
+    - $ref: '../../components/headers/date.header.yaml'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref:   '../../components/schemas/trip/new-trip.schema.yaml'
+  responses:
+    '201':
+      description:  'OK'
+      content:
+        application/json:
+          schema:
+            properties:
+              trip:   
+                $ref: '../../components/schemas/trip/trip.schema.yaml'
+    '400':
+      $ref: '../../components/responses/400.bad-request.response.yaml'
+
+# GET /api/v1/trips
+get:
+  tags:
+    - Trip
+  operationId:  getTrips
+  summary:      Get List of Trips
+  description:  >
+    Retrieve a list of trips. 
+  parameters:
+    - $ref: '../../components/parameters/page.param.yaml'
+    - $ref: '../../components/parameters/page-size.param.yaml'
+    - $ref: '../../components/parameters/sort-by.param.yaml'
+    - $ref: '../../components/headers/date.header.yaml'
+  responses:
+    '200':
+      description:  'OK'
+      content:
+        application/json:
+          schema:
+            properties: 
+              trips:
+                $ref: '../../components/schemas/trip/trip-collection.schema.yaml'
+              metadata:
+                $ref: '../../components/schemas/lib/pagination.schema.yaml'
+    '400':
+      $ref: '../../components/responses/400.bad-request.response.yaml'
+    

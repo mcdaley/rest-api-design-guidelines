@@ -1,0 +1,13 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/payment/payment.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Payment for a ride that has been saved to the taxi ride service.
+allOf:
+  - $ref: './new-payment.schema.yaml'
+properties:
+  id:
+    type:     string
+    format:   uuid
+    example:  37bc016c-c1ed-4c34-aee9-2c50afdc4666

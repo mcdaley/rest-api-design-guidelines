@@ -1,0 +1,12 @@
+# -----------------------------------------------------------------------------
+# openapi/components/responses/401.unauthorized.response.yaml
+# -----------------------------------------------------------------------------
+description: >
+  Unauthorized
+content:
+  application/json:
+    schema:
+      $ref:     '../schemas/error/error.schema.yaml'
+    example:
+      code:     401
+      message:  User was not authenticated

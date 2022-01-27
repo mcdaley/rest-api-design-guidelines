@@ -1,0 +1,34 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/trip/new-trip.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  A rideshare trip.
+required:
+  - passenger_id
+  - pickup_location
+  - dropoff_location
+  - request_datetime
+  - amount
+properties:
+  passenger_id:
+    type:     string 
+    format:   uuid
+    example:  e614cc4b-9bd7-47c2-85b3-eca88cb9236e
+  driver_id:
+    type:     string 
+    format:   uuid
+    example:  1ade3c8b-f30d-4bca-8cd8-cd123d4906e9
+  pickup_location:
+    $ref:     '../address/new-address.schema.yaml'
+  dropoff_location:
+    $ref:     '../address/new-address.schema.yaml'
+  request_datetime:
+    type:     string
+    format:   datetime
+  status:
+    $ref:     '../lib/trip-status.schema.yaml'
+  amount:
+    type:     number
+    example:  25.00
+

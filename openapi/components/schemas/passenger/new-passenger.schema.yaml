@@ -1,0 +1,27 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/passenger/new-passenger.schema.yaml
+# -----------------------------------------------------------------------------
+type:   object
+required:
+- first_name
+- last_name
+- mobile
+- email
+properties:
+  first_name:
+    type:     string
+    example:  John
+  last_name:
+    type:     string
+    example:  Doe
+  mobile:
+    type:     string
+    pattern:  '^\d{3}-\d{3}-\d{4}$'
+    example:  415-894-1234
+  email:
+    type:     string
+    format:   email 
+    example:  john.doe@email.com
+  address: 
+    type:     object 
+    $ref:     '../address/new-address.schema.yaml'

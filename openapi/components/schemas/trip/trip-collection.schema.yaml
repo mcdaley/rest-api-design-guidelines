@@ -1,0 +1,6 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/trip/trip-collection.schema.yaml
+# -----------------------------------------------------------------------------
+type:   array 
+items:
+  $ref: './trip.schema.yaml'

@@ -1,0 +1,34 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/payment/new-payment.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Creates a new payment when a passenger completes a ride.
+required:
+  - passenger_id
+  - driver_id
+  - trip_id
+  - amount
+properties:
+  passenger_id:
+    type:     string
+    format:   uuid
+    example:  5c36d85f-f0da-4950-be8d-a4f405eff905
+  driver_id:
+    type:     string
+    format:   uuid
+    example:  fc64d257-f389-4fdf-8f49-6488828de2d0
+  trip_id:
+    type:     string
+    format:   uuid
+    example:  83561d86-7c1a-4eb4-8c5e-b3ecbaa50712
+  amount:
+    type:     number 
+    example:  10.55
+  tip: 
+    type:     number
+    example:  3.55
+    default:  0
+  total:
+    type:     number
+    example:  14.05

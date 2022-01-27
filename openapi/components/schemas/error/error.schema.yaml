@@ -1,0 +1,9 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/lib/error.schema.yaml
+# -----------------------------------------------------------------------------
+type: object
+properties:
+  code:
+    type: integer
+  message:
+    type: string

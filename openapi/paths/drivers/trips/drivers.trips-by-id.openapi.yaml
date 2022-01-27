@@ -1,0 +1,27 @@
+# -----------------------------------------------------------------------------
+# openapi/paths/drivers/trips/drivers.trips-by-id.openapi.yaml
+# -----------------------------------------------------------------------------
+
+# GET /api/v1/drivers/{driverId}/trips/{tripId}
+get:
+  tags:
+    - Driver Trips
+  operationId:  getDriverTrip
+  summary:      Get a Driver Trip
+  description:  >
+    Retrieve a specific trip made by a driver.
+  parameters:
+    - $ref: '../../../components/parameters/driver-id.param.yaml'
+    - $ref: '../../../components/parameters/trip-id.param.yaml'
+    - $ref: '../../../components/headers/date.header.yaml'
+  responses:
+    '200':
+      description:  'OK'
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/trip/trip.schema.yaml'
+    '400':
+      $ref: '../../../components/responses/400.bad-request.response.yaml'
+    '404':
+      $ref: '../../../components/responses/404.not-found.response.yaml'

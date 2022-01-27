@@ -1,0 +1,60 @@
+# -----------------------------------------------------------------------------
+# openapi/paths/drivers/drivers.openapi.yaml
+# -----------------------------------------------------------------------------
+
+# POST /api/v1/drivers
+post:
+  tags:
+    - Driver
+  operationId:  createDriver
+  summary:      Create New Driver
+  description:  >
+    Creates a new driver account can pickup and driver passengers using the
+    taxi app.
+  parameters:
+    - $ref: '../../components/headers/request-id.header.yaml'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref:   '../../components/schemas/driver/new-driver.schema.yaml'
+    description:  >
+      Create a rideshare app driver.
+  responses:
+    '201':
+      description: "OK"
+      content:
+        application/json:
+          schema:
+            properties:
+              driver:
+                $ref: '../../components/schemas/driver/driver.schema.yaml'
+    '400':
+      $ref: '../../components/responses/400.bad-request.response.yaml'
+
+# GET /api/v1/drivers
+get:
+  tags:
+    - Driver
+  operationId:  getDrivers
+  summary:      Retrieve a List of Drivers
+  description:  Retrieve a list of drivers.
+  parameters:
+    - $ref: '../../components/parameters/page.param.yaml'
+    - $ref: '../../components/parameters/page-size.param.yaml'
+    - $ref: '../../components/parameters/sort-by.param.yaml'
+    - $ref: '../../components/headers/request-id.header.yaml'
+  responses:
+    '200':
+      description:  'OK'
+      content:
+        application/json:
+          schema:
+            properties:
+              drivers:
+                $ref: '../../components/schemas/driver/driver-collection.schema.yaml'
+              metadata:
+                $ref: '../../components/schemas/lib/pagination.schema.yaml'
+    '401':
+      $ref: '../../components/responses/401.unauthorized.response.yaml'
+

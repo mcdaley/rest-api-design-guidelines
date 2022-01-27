@@ -1,0 +1,16 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/credit-card/credit-card.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Credit card that has been verified and saved by the taxi app. Passengers
+  are now able to request and pay for rides using the taxi app.
+required:
+  - id
+allOf: 
+  - $ref: './new-credit-card.schema.yaml'
+properties:
+  id:
+    type:     string
+    format:   uuid
+    example:  d290f1ee-6c54-4b01-90e6-d701748f0851

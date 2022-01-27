@@ -1,0 +1,11 @@
+# -----------------------------------------------------------------------------
+# openapi/components/headers/driver-id.header.yaml
+# -----------------------------------------------------------------------------
+name:         Taxi-Driver-Id
+description:  Unique driver identifier.
+in:           header
+style:        simple
+explode:      false
+schema:
+  type:     string
+  example:  b8677e36-8f4b-4de3-924d-c2ce6c75502f

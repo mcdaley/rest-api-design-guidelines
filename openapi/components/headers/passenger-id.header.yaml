@@ -1,0 +1,12 @@
+# -----------------------------------------------------------------------------
+# openapi/components/headers/passenger-id.header.yaml
+# -----------------------------------------------------------------------------
+name:         Taxi-Passenger-Id
+description:  Unique passenger identifier.
+in:           header
+style:        simple
+explode:      false
+schema:
+  type:     string
+  format:   uuid
+  example:  c0ae2971-2170-4da5-aa59-206f52384917

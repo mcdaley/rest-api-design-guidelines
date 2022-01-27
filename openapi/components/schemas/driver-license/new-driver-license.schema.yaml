@@ -1,0 +1,27 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/driver-license/new-driver-license.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Defines the fields required to save a driver license so that taxi app 
+  can verify that all of its drivers have a valid license. 
+required:
+  - name
+  - license_number
+  - state 
+  - expiration_date
+properties:
+  license_number:
+    type:       string
+    example:    CA5260863502
+  name:
+    type:       string 
+    maxLength:  128
+    example:    Alex Reiger
+  state:
+    type:       enum
+    $ref:       '../lib/state.schema.yaml'
+  expiration_date:
+    type:       string 
+    format:     date 
+    example:    2024-03-17

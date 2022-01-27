@@ -1,0 +1,1060 @@
+openapi: 3.0.2
+info:
+  version: 1.0.0
+  title: taxi.com
+  termsOfService: https://example.com/terms/
+  contact:
+    email: contact@example.com
+    url: http://example.com/contact
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://redocly.github.io/openapi-template/logo.png
+  description: >
+    ## Taxi.com an OpenAPI Example
+
+    Taxi.com is an example API for a fictional rideshare application to 
+    demonstrate how to implement the Rest API Design Guidelines using the
+    OpenAPI standards.
+externalDocs:
+  description: Find out how to create a GitHub repo for your OpenAPI definition.
+  url: https://github.com/Rebilly/generator-openapi-repo
+tags:
+  - name: Passenger
+    description: Rideshare app user that requests a ride to their destination.
+  - name: Passenger Payment
+    description: Passenger payment details.
+  - name: Driver
+    description: >-
+      Rideshare Driver that picks up Passengers and drives them to their
+      destination for a fee.
+servers:
+  - url: http://example.com/api/v1
+  - url: https://example.com/api/v1
+paths:
+  /passengers:
+    post:
+      tags:
+        - Passenger
+      operationId: createPassenger
+      summary: Create a Passenger
+      description: >
+        Creates a new passenger account that can request rides using the taxi
+        app.
+      parameters:
+        - $ref: '#/components/parameters/request-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/new-passenger'
+        description: |
+          Create a rideshare app passenger.
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  passenger:
+                    $ref: '#/components/schemas/passenger'
+        '400':
+          $ref: '#/components/responses/400'
+  /passengers/{passengerId}:
+    get:
+      tags:
+        - Passenger
+      operationId: getPassenger
+      summary: Retrieve a Passenger
+      description: |
+        Retrieves the passenger details by passing in the passenger UUID.
+      parameters:
+        - $ref: '#/components/parameters/passenger-id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  passenger:
+                    $ref: '#/components/schemas/passenger'
+        '404':
+          $ref: '#/components/responses/404'
+    patch:
+      tags:
+        - Passenger
+      operationId: updatePassenger
+      summary: Updates a Passenger
+      description: Updates an existing passenger
+      parameters:
+        - $ref: '#/components/parameters/passenger-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/new-passenger'
+        description: Passenger fields to update.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  passenger:
+                    $ref: '#/components/schemas/passenger'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      tags:
+        - Passenger
+      operationId: deletePassenger
+      summary: Delete a passenger
+      description: >
+        Deletes the passenger account so the user can no longer request rides.
+        Passengers can select to delete their account from the app or an admin
+        can delete passenger accounts for fraud reasons.
+      parameters:
+        - $ref: '#/components/parameters/passenger-id'
+      responses:
+        '204':
+          description: OK
+        '404':
+          $ref: '#/components/responses/404'
+  /passengers/{passengerId}/credit-cards:
+    post:
+      tags:
+        - Passenger Payment
+      operationId: addPassengerCreditCard
+      summary: Add Passenger Credit Card
+      description: >
+        Adds and validates a passenger's credit card to their account so that
+        drivers. can request and pay for rides.
+      parameters:
+        - $ref: '#/components/parameters/passenger-id'
+        - $ref: '#/components/parameters/request-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/new-credit-card'
+        description: |
+          Save driver's credit card.
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  credit_card:
+                    $ref: '#/components/schemas/credit-card'
+        '400':
+          $ref: '#/components/responses/400'
+    get:
+      tags:
+        - Passenger Payment
+      operationId: getPassengerCreditCards
+      summary: Get Passenger Credit Cards
+      description: |
+        Gets a list of the passenger's credit cards.
+      parameters:
+        - $ref: '#/components/parameters/passenger-id'
+        - $ref: '#/components/parameters/request-id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  credit_cards:
+                    $ref: '#/components/schemas/credit-card-collection'
+                  metadata:
+                    $ref: '#/components/schemas/pagination'
+        '400':
+          $ref: '#/components/responses/400'
+  /drivers:
+    post:
+      tags:
+        - Driver
+      operationId: createDriver
+      summary: Create New Driver
+      description: >
+        Creates a new driver account can pickup and driver passengers using the
+        taxi app.
+      parameters:
+        - $ref: '#/components/parameters/request-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/new-driver'
+        description: |
+          Create a rideshare app driver.
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  driver:
+                    $ref: '#/components/schemas/driver'
+        '400':
+          $ref: '#/components/responses/400'
+    get:
+      tags:
+        - Driver
+      operationId: getDrivers
+      summary: Retrieve a List of Drivers
+      description: Retrieve a list of drivers.
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/page-size'
+        - $ref: '#/components/parameters/sort-by'
+        - $ref: '#/components/parameters/request-id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  drivers:
+                    $ref: '#/components/schemas/driver-collection'
+                  metadata:
+                    $ref: '#/components/schemas/pagination'
+        '401':
+          $ref: '#/components/responses/401'
+  /drivers/{driverId}:
+    get:
+      tags:
+        - Driver
+      operationId: getDriver
+      summary: Retrieve a Driver
+      description: Retrieve details about a driver.
+      parameters:
+        - $ref: '#/components/parameters/driver-id'
+        - $ref: '#/components/parameters/request-id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  driver:
+                    $ref: '#/components/schemas/driver'
+        '404':
+          $ref: '#/components/responses/404'
+    put:
+      tags:
+        - Driver
+      operationId: updateDriver
+      summary: Update a Driver Profile.
+      description: >
+        Update the driver profile. Need to call the API with all of the driver
+        fields including the fields that are and are not being updated because
+        items it is a PUT request.
+      parameters:
+        - $ref: '#/components/parameters/driver-id'
+        - $ref: '#/components/parameters/request-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/new-driver'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  account:
+                    $ref: '#/components/schemas/driver'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      tags:
+        - Driver
+      operationId: deleteDriver
+      summary: Delete a Driver
+      description: >
+        Delete the driver's account. After the account is deleted the driver is
+        no longer able to drive taxi app passengers.
+      parameters:
+        - $ref: '#/components/parameters/driver-id'
+        - $ref: '#/components/parameters/request-id'
+      responses:
+        '204':
+          description: OK
+        '404':
+          $ref: '#/components/responses/404'
+  /drivers/{driverId}/trips:
+    get:
+      tags:
+        - Driver Trips
+      operationId: getDriverTrips
+      summary: Get List of Driver Trips
+      description: |
+        Retrieve a list of trips for a driver.
+      parameters:
+        - $ref: '#/components/parameters/driver-id'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/page-size'
+        - $ref: '#/components/parameters/sort-by'
+        - $ref: '#/components/parameters/date'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  trips:
+                    $ref: '#/components/schemas/trip-collection'
+                  metadata:
+                    $ref: '#/components/schemas/pagination'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+  /drivers/{driverId}/trips/{tripId}:
+    get:
+      tags:
+        - Driver Trips
+      operationId: getDriverTrip
+      summary: Get a Driver Trip
+      description: |
+        Retrieve a specific trip made by a driver.
+      parameters:
+        - $ref: '#/components/parameters/driver-id'
+        - $ref: '#/components/parameters/trip-id'
+        - $ref: '#/components/parameters/date'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/trip'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+  /trips:
+    post:
+      tags:
+        - Trip
+      operationId: createTrip
+      summary: Create a Trip
+      description: |
+        Creates a new trip when a user requests a ride using the taxi app.
+      parameters:
+        - $ref: '#/components/parameters/request-id'
+        - $ref: '#/components/parameters/date'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/new-trip'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  trip:
+                    $ref: '#/components/schemas/trip'
+        '400':
+          $ref: '#/components/responses/400'
+    get:
+      tags:
+        - Trip
+      operationId: getTrips
+      summary: Get List of Trips
+      description: |
+        Retrieve a list of trips. 
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/page-size'
+        - $ref: '#/components/parameters/sort-by'
+        - $ref: '#/components/parameters/date'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  trips:
+                    $ref: '#/components/schemas/trip-collection'
+                  metadata:
+                    $ref: '#/components/schemas/pagination'
+        '400':
+          $ref: '#/components/responses/400'
+  /trips/{tripId}:
+    get:
+      tags:
+        - Trip
+      operationId: getTrip
+      summary: Retrieve a Trip
+      description: Retrieve details about a trip.
+      parameters:
+        - $ref: '#/components/parameters/trip-id'
+        - $ref: '#/components/parameters/request-id'
+        - $ref: '#/components/parameters/date'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  trip:
+                    $ref: '#/components/schemas/trip'
+        '404':
+          $ref: '#/components/responses/404'
+    patch:
+      tags:
+        - Trip
+      operationId: updateTrip
+      summary: Update a Trip
+      description: >
+        Update a trip's driver, pickup location, or dropoff location. If the
+        pickup or dropoff location are changed then the taxis app calculates a
+        new cost for the ride. 
+      parameters:
+        - $ref: '#/components/parameters/trip-id'
+        - $ref: '#/components/parameters/request-id'
+        - $ref: '#/components/parameters/date'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/patch-trip'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  trip:
+                    $ref: '#/components/schemas/trip'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      tags:
+        - Trip
+      operationId: deleteTrip
+      summary: Delete a Trip
+      description: >
+        Cancels a trip requested by a Passenger. The trip can only be Cancelled
+        before the Passenger has been picked up.
+      parameters:
+        - $ref: '#/components/parameters/trip-id'
+        - $ref: '#/components/parameters/request-id'
+        - $ref: '#/components/parameters/date'
+      responses:
+        '204':
+          description: OK
+        '404':
+          $ref: '#/components/responses/404'
+  /trips/{tripId}/pickup:
+    post:
+      tags:
+        - Trip
+      operationId: pickupPassenger
+      summary: Pickup a Passenger
+      description: >
+        Driver updates the status of the ride from **Accepted** to **In
+        Progrss**  when the driver picks up the passenger that requested the
+        ride. The API provides a shortcut to updating the trip status.
+      parameters:
+        - $ref: '#/components/parameters/trip-id'
+        - $ref: '#/components/parameters/request-id'
+        - $ref: '#/components/parameters/date'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  trip:
+                    $ref: '#/components/schemas/trip'
+        '404':
+          $ref: '#/components/responses/404'
+  /trips/{tripId}/dropoff:
+    post:
+      tags:
+        - Trip
+      operationId: dropoffPassenger
+      summary: Dropoff a Passenger
+      description: >
+        Driver updates the status of the ride from **In Progrss** to
+        **Completed** when the driver drops off the passenger at the
+        destination. The API provides a short cut to updating the trip.
+      parameters:
+        - $ref: '#/components/parameters/trip-id'
+        - $ref: '#/components/parameters/request-id'
+        - $ref: '#/components/parameters/date'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  trip:
+                    $ref: '#/components/schemas/trip'
+        '404':
+          $ref: '#/components/responses/404'
+  /trips/{tripId}/pay:
+    post:
+      tags:
+        - Trip
+      operationId: payForTrip
+      summary: Pay for Trip
+      description: >
+        Passenger pays for the ride after being dropped off at the destination. 
+        The taxi app charges the passenger's payment method for the amount of
+        the ride and updates the status of the ride to **Paid**.
+      parameters:
+        - $ref: '#/components/parameters/trip-id'
+        - $ref: '#/components/parameters/request-id'
+        - $ref: '#/components/parameters/passenger-id-2'
+        - $ref: '#/components/parameters/date'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/new-payment'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  payment:
+                    $ref: '#/components/schemas/payment'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+components:
+  securitySchemes:
+    main_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://example.com/api/oauth/dialog
+          scopes:
+            read:users: read users info
+            write:users: modify or remove users
+    api_key:
+      type: apiKey
+      in: header
+      name: api_key
+    basic_auth:
+      type: http
+      scheme: basic
+  parameters:
+    request-id:
+      name: Taxi-Request-Id
+      description: Unique client provided identifier to ensure request is idempotent.
+      in: header
+      style: simple
+      explode: false
+      schema:
+        type: string
+        example: b8677e36-8f4b-4de3-924d-c2ce6c75502f
+    passenger-id:
+      name: passengerId
+      in: path
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+        format: uuid
+        example: 5b300f94-17fa-4666-a5a6-15efe83cffc2
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    page-size:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        minimum: 5
+        default: 25
+    sort-by:
+      name: sort_by
+      in: query
+      description: >
+        Select the fields and the order to sort the results. The fields is a
+        comma  separated of fields followed by the sort order. For example to
+        sort by  ascending last name and descending date use the query:
+        **sort_by=last_name:asc,date:desc**. The default sort order is
+        **ascending**  if an order is not specified.
+      schema:
+        type: string
+    driver-id:
+      name: driverId
+      in: path
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+        format: uuid
+        example: abca1d03-d85f-4c80-955b-1d392fab1d90
+    date:
+      name: Date
+      description: Date and time which in UTC when the message was originated.
+      in: header
+      style: simple
+      explode: false
+      schema:
+        type: string
+        format: date-time
+    trip-id:
+      name: tripId
+      in: path
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+        format: uuid
+        example: 5de2cf6a-40c8-4961-8911-cc10e6a59946
+    passenger-id-2:
+      name: Taxi-Passenger-Id
+      description: Unique passenger identifier.
+      in: header
+      style: simple
+      explode: false
+      schema:
+        type: string
+        format: uuid
+        example: c0ae2971-2170-4da5-aa59-206f52384917
+  schemas:
+    state:
+      type: string
+      enum:
+        - CA
+        - OR
+        - WA
+        - NY
+      example: CA
+    new-address:
+      type: object
+      required:
+        - address_line1
+        - city
+        - state
+        - zip_code
+      properties:
+        address_line1:
+          type: string
+          maxLength: 128
+          example: 1 Market St.
+        address_line2:
+          type: string
+          maxLength: 128
+        city:
+          type: string
+          maxLength: 128
+          example: San Francisco
+        state:
+          type: enum
+          $ref: '#/components/schemas/state'
+        zip_code:
+          type: string
+          pattern: ^\d{5}(-\d{4})?$
+          example: 94105
+    new-passenger:
+      type: object
+      required:
+        - first_name
+        - last_name
+        - mobile
+        - email
+      properties:
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Doe
+        mobile:
+          type: string
+          pattern: ^\d{3}-\d{3}-\d{4}$
+          example: 415-894-1234
+        email:
+          type: string
+          format: email
+          example: john.doe@email.com
+        address:
+          type: object
+          $ref: '#/components/schemas/new-address'
+    address:
+      type: object
+      description: >
+        Address required for passengers and drivers to register and also used as
+        the pickup and dropoff locations for rides.
+      required:
+        - id
+      allOf:
+        - $ref: '#/components/schemas/new-address'
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 79455671-2e46-46f1-b046-37d827f33103
+    passenger:
+      type: object
+      description: |
+        Passengers use the taxi app to request, take, and pay for rides.
+      required:
+        - id
+      allOf:
+        - $ref: '#/components/schemas/new-passenger'
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        address:
+          type: object
+          $ref: '#/components/schemas/address'
+    error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+    new-credit-card:
+      type: object
+      description: >
+        Credit card details required for passengers to have the taxi app to 
+        validate and save their credit card that is required to request and pay
+        for rides.
+      required:
+        - name
+        - number
+        - expiration_date
+      properties:
+        name:
+          type: string
+          maxLength: 64
+        number:
+          type: string
+          pattern: ^\d{4}-\d{4}-\d{4}-\d{4}$
+          example: 4012888888881881
+        expiration_date:
+          type: string
+          pattern: ^\d{2}-\d{4}$
+          example: 02-2024
+        cvc:
+          type: string
+          maxLength: 3
+          example: 456
+    credit-card:
+      type: object
+      description: >
+        Credit card that has been verified and saved by the taxi app. Passengers
+        are now able to request and pay for rides using the taxi app.
+      required:
+        - id
+      allOf:
+        - $ref: '#/components/schemas/new-credit-card'
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+    credit-card-collection:
+      type: array
+      items:
+        $ref: '#/components/schemas/credit-card'
+    pagination:
+      type: object
+      description: |
+        Pagination data for collection
+      properties:
+        pagination:
+          type: object
+          required:
+            - page
+            - page_size
+            - total_count
+          properties:
+            page:
+              type: number
+              format: integer
+              default: 1
+              example: 2
+            page_size:
+              type: number
+              format: integer
+              default: 20
+              example: 25
+            total_count:
+              type: number
+              format: integer
+              example: 155
+    new-driver-license:
+      type: object
+      description: >
+        Defines the fields required to save a driver license so that taxi app 
+        can verify that all of its drivers have a valid license. 
+      required:
+        - name
+        - license_number
+        - state
+        - expiration_date
+      properties:
+        license_number:
+          type: string
+          example: CA5260863502
+        name:
+          type: string
+          maxLength: 128
+          example: Alex Reiger
+        state:
+          type: enum
+          $ref: '#/components/schemas/state'
+        expiration_date:
+          type: string
+          format: date
+          example: '2024-03-17'
+    new-driver:
+      type: object
+      description: |
+        Driver details required to create a new driver for the taxi app.
+      required:
+        - first_name
+        - last_name
+        - email
+        - mobile
+        - driver_license
+      properties:
+        first_name:
+          type: string
+          maxLength: 128
+          example: Alex
+        last_name:
+          type: string
+          maxLength: 128
+          example: Reiger
+        email:
+          type: string
+          format: email
+          example: alex.reiger@taxi.com
+        mobile:
+          type: string
+          pattern: ^\d{3}-\d{3}-\d{4}$
+          example: 202-875-4343
+        driver_license:
+          type: object
+          $ref: '#/components/schemas/new-driver-license'
+    driver-license:
+      type: object
+      description: >
+        Defines a saved driver's license so that taxi app that verifies a
+        driver  has a valid license.
+      required:
+        - id
+      allOf:
+        - $ref: '#/components/schemas/new-driver-license'
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 671c272f-370f-40f9-b863-7531aa696b4a
+    driver:
+      type: object
+      description: >
+        Defines a valid driver that is able to pickup and driver taxi app
+        passengers.
+      required:
+        - id
+      allOf:
+        - $ref: '#/components/schemas/new-driver'
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d68825b3-830c-44f8-953e-a8b5cd943aa8
+        driver_license:
+          type: object
+          $ref: '#/components/schemas/driver-license'
+    driver-collection:
+      type: array
+      items:
+        $ref: '#/components/schemas/driver'
+    trip-status:
+      type: string
+      enum:
+        - Pending
+        - Accepted
+        - InProgress
+        - Cancelled
+        - Completed
+        - Paid
+      example: Accepted
+    new-trip:
+      type: object
+      description: |
+        A rideshare trip.
+      required:
+        - passenger_id
+        - pickup_location
+        - dropoff_location
+        - request_datetime
+        - amount
+      properties:
+        passenger_id:
+          type: string
+          format: uuid
+          example: e614cc4b-9bd7-47c2-85b3-eca88cb9236e
+        driver_id:
+          type: string
+          format: uuid
+          example: 1ade3c8b-f30d-4bca-8cd8-cd123d4906e9
+        pickup_location:
+          $ref: '#/components/schemas/new-address'
+        dropoff_location:
+          $ref: '#/components/schemas/new-address'
+        request_datetime:
+          type: string
+          format: datetime
+        status:
+          $ref: '#/components/schemas/trip-status'
+        amount:
+          type: number
+          example: 25
+    trip:
+      type: object
+      description: |
+        Represents a trip that has been created in the taxi app.
+      required:
+        - id
+      allOf:
+        - $ref: '#/components/schemas/new-trip'
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: beaf7b93-b8de-41eb-92af-8af58b50409b
+    trip-collection:
+      type: array
+      items:
+        $ref: '#/components/schemas/trip'
+    patch-trip:
+      type: object
+      description: |
+        Defines the trip fields that can be updated with a PATCH request.
+      properties:
+        driver_id:
+          type: string
+          format: uuid
+          example: 1ade3c8b-f30d-4bca-8cd8-cd123d4906e9
+        pickup_location:
+          $ref: '#/components/schemas/new-address'
+        dropoff_location:
+          $ref: '#/components/schemas/new-address'
+        status:
+          $ref: '#/components/schemas/trip-status'
+        amount:
+          type: number
+          example: 25
+    new-payment:
+      type: object
+      description: |
+        Creates a new payment when a passenger completes a ride.
+      required:
+        - passenger_id
+        - driver_id
+        - trip_id
+        - amount
+      properties:
+        passenger_id:
+          type: string
+          format: uuid
+          example: 5c36d85f-f0da-4950-be8d-a4f405eff905
+        driver_id:
+          type: string
+          format: uuid
+          example: fc64d257-f389-4fdf-8f49-6488828de2d0
+        trip_id:
+          type: string
+          format: uuid
+          example: 83561d86-7c1a-4eb4-8c5e-b3ecbaa50712
+        amount:
+          type: number
+          example: 10.55
+        tip:
+          type: number
+          example: 3.55
+          default: 0
+        total:
+          type: number
+          example: 14.05
+    payment:
+      type: object
+      description: |
+        Payment for a ride that has been saved to the taxi ride service.
+      allOf:
+        - $ref: '#/components/schemas/new-payment'
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 37bc016c-c1ed-4c34-aee9-2c50afdc4666
+  responses:
+    '400':
+      description: |
+        Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            code: 400
+            message: Invalid resource id, invalid request body
+    '401':
+      description: |
+        Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            code: 401
+            message: User was not authenticated
+    '404':
+      description: |
+        Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            code: 404
+            message: Resource Not Found

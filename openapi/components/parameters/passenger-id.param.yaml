@@ -1,0 +1,12 @@
+# -----------------------------------------------------------------------------
+# openapi/components/parameters/driver-id.param.yaml
+# -----------------------------------------------------------------------------
+name:     passengerId
+in:       path
+required: true
+style:    simple
+explode:  false
+schema:
+  type:     string
+  format:   uuid
+  example:  5b300f94-17fa-4666-a5a6-15efe83cffc2

@@ -1,0 +1,28 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/credit-card/new-credit-card.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Credit card details required for passengers to have the taxi app to 
+  validate and save their credit card that is required to request and
+  pay for rides.
+required:
+  - name
+  - number 
+  - expiration_date
+properties:
+  name:
+    type:       string 
+    maxLength:  64
+  number:
+    type:       string 
+    pattern:    '^\d{4}-\d{4}-\d{4}-\d{4}$'
+    example:    4012888888881881
+  expiration_date:
+    type:       string
+    pattern:    '^\d{2}-\d{4}$'
+    example:    02-2024
+  cvc:
+    type:       string 
+    maxLength:  3
+    example:    456

@@ -1,0 +1,12 @@
+# -----------------------------------------------------------------------------
+# openapi/components/responses/400.bad-request.response.yaml
+# -----------------------------------------------------------------------------
+description:  >
+  Bad Request
+content:
+  application/json:
+    schema:
+      $ref:     '../schemas/error/error.schema.yaml'
+    example:
+      code:     400
+      message:  Invalid resource id, invalid request body

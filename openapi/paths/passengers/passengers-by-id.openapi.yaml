@@ -1,0 +1,71 @@
+# -----------------------------------------------------------------------------
+# openapi/paths/passengers/passengers-by-id.openapi.yaml
+# -----------------------------------------------------------------------------
+
+# GET /passengers/{passengerId}
+get:
+  tags:
+    - Passenger
+  operationId:  getPassenger
+  summary:      Retrieve a Passenger
+  description:  >
+    Retrieves the passenger details by passing in the passenger UUID.
+  parameters:
+    - $ref: '../../components/parameters/passenger-id.param.yaml'
+  responses:
+    '200':
+      description: 'OK'
+      content:
+        application/json:
+          schema:
+            properties:
+              passenger:
+                $ref: '../../components/schemas/passenger/passenger.schema.yaml'
+    '404': 
+      $ref: '../../components/responses/404.not-found.response.yaml'
+
+# PATCH /passengers/{passengerId}
+patch:
+  tags:
+    - Passenger
+  operationId:  updatePassenger
+  summary:      Updates a Passenger
+  description:  Updates an existing passenger
+  parameters:
+    - $ref: '../../components/parameters/passenger-id.param.yaml'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/passenger/new-passenger.schema.yaml'
+    description: Passenger fields to update.
+  responses:
+    '200':
+      description: "OK"
+      content:
+        application/json:
+          schema:
+            properties:
+              passenger:
+                $ref: '../../components/schemas/passenger/passenger.schema.yaml'
+    '404': 
+      $ref: '../../components/responses/404.not-found.response.yaml'
+
+
+# DELETE /passengers/{passengerId}
+delete:
+  tags:
+    - Passenger
+  operationId:  deletePassenger
+  summary:      Delete a passenger
+  description:  >
+    Deletes the passenger account so the user can no longer request rides.
+    Passengers can select to delete their account from the app or an admin
+    can delete passenger accounts for fraud reasons.
+  parameters:
+    - $ref: '../../components/parameters/passenger-id.param.yaml'
+  responses:
+    '204':
+      description: 'OK'
+    '404': 
+      $ref: '../../components/responses/404.not-found.response.yaml'

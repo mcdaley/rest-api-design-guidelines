@@ -1,0 +1,18 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/passenger/passenger.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Passengers use the taxi app to request, take, and pay for rides.
+required:
+  - id
+allOf: 
+  - $ref: './new-passenger.schema.yaml'
+properties:
+  id:
+    type:     string
+    format:   uuid
+    example:  d290f1ee-6c54-4b01-90e6-d701748f0851
+  address: 
+    type:     object 
+    $ref:     '../address/address.schema.yaml'

@@ -1,0 +1,11 @@
+# -----------------------------------------------------------------------------
+# openapi/components/headers/expires.header.yaml
+# -----------------------------------------------------------------------------
+name:         Expires
+description:  Date in UTC when token expires
+in:           header
+style:        simple
+explode:      false
+schema:
+  type:   string
+  format: date-time

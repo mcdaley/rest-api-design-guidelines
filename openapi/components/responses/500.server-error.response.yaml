@@ -1,0 +1,12 @@
+# -----------------------------------------------------------------------------
+# openapi/components/responses/500.server-error.response.yaml
+# -----------------------------------------------------------------------------
+description: >
+  Server Error
+content:
+  application/json:
+    schema:
+      $ref:     '../schemas/error/error.schema.yaml'
+    example:
+      code:     500
+      message:  Server Error

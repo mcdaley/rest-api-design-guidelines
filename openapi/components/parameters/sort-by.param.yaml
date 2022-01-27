@@ -1,0 +1,13 @@
+# -----------------------------------------------------------------------------
+# openapi/components/parameters/sort-by.param.yaml
+# -----------------------------------------------------------------------------
+name:         sort_by
+in:           query
+description:  >
+  Select the fields and the order to sort the results. The fields is a comma 
+  separated of fields followed by the sort order. For example to sort by 
+  ascending last name and descending date use the query:
+  **sort_by=last_name:asc,date:desc**. The default sort order is **ascending** 
+  if an order is not specified.
+schema:
+  type:     string

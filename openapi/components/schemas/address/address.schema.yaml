@@ -1,0 +1,16 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/address/address.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Address required for passengers and drivers to register and also used
+  as the pickup and dropoff locations for rides.
+required:
+  - id
+allOf: 
+  - $ref: './new-address.schema.yaml'
+properties:
+  id:
+    type:     string
+    format:   uuid
+    example:  79455671-2e46-46f1-b046-37d827f33103

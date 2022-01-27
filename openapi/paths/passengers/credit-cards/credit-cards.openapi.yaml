@@ -1,0 +1,59 @@
+# -----------------------------------------------------------------------------
+# openapi/paths/passengers/credit-cards/credit-cards.openapi.yaml
+# -----------------------------------------------------------------------------
+
+# POST /api/v1/passengers/{passengerId}/credit-cards
+post:
+  tags:
+    - Passenger Payment
+  operationId:  addPassengerCreditCard
+  summary:      Add Passenger Credit Card
+  description:  >
+    Adds and validates a passenger's credit card to their account so that drivers.
+    can request and pay for rides.
+  parameters:
+    - $ref: '../../../components/parameters/passenger-id.param.yaml'
+    - $ref: '../../../components/headers/request-id.header.yaml'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref:   '../../../components/schemas/credit-card/new-credit-card.schema.yaml'
+    description:  >
+      Save driver's credit card.
+  responses:
+    '201':
+      description: "OK"
+      content:
+        application/json:
+          schema:
+            properties:
+              credit_card:
+                $ref: '../../../components/schemas/credit-card/credit-card.schema.yaml'
+    '400':
+      $ref: '../../../components/responses/400.bad-request.response.yaml'
+
+# GET /api/v1/passengers/{passengerId}/credit-cards
+get:
+  tags:
+    - Passenger Payment
+  operationId:  getPassengerCreditCards
+  summary:      Get Passenger Credit Cards
+  description:  >
+    Gets a list of the passenger's credit cards.
+  parameters:
+    - $ref: '../../../components/parameters/passenger-id.param.yaml'
+    - $ref: '../../../components/headers/request-id.header.yaml'
+  responses:
+    '200':
+      description: "OK"
+      content:
+        application/json:
+          schema:
+            properties:
+              credit_cards:
+                $ref: '../../../components/schemas/credit-card/credit-card-collection.schema.yaml'
+              metadata:
+                $ref: '../../../components/schemas/lib/pagination.schema.yaml'
+    '400':
+      $ref: '../../../components/responses/400.bad-request.response.yaml'

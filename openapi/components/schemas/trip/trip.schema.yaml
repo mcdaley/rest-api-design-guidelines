@@ -1,0 +1,15 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/trip/trip.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Represents a trip that has been created in the taxi app.
+required: 
+  - id
+allOf:
+  - $ref: './new-trip.schema.yaml'
+properties:
+  id: 
+    type:     string
+    format:   uuid
+    example:  beaf7b93-b8de-41eb-92af-8af58b50409b

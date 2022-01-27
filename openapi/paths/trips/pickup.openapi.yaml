@@ -1,0 +1,29 @@
+# -----------------------------------------------------------------------------
+# openapi/paths/trips/pickup.openapi.yaml
+# -----------------------------------------------------------------------------
+
+# POST /api/v1/trips/{tripId}/pickup
+post: 
+  tags:
+    - Trip
+  operationId:  pickupPassenger
+  summary:      Pickup a Passenger
+  description:  >
+    Driver updates the status of the ride from **Accepted** to **In Progrss** 
+    when the driver picks up the passenger that requested the ride. The API
+    provides a shortcut to updating the trip status.
+  parameters:
+    - $ref:     '../../components/parameters/trip-id.param.yaml'
+    - $ref:     '../../components/headers/request-id.header.yaml'
+    - $ref:     '../../components/headers/date.header.yaml'
+  responses:
+    '201':
+      description: 'OK'
+      content:
+        application/json:
+          schema:
+            properties:
+              trip:
+                $ref: '../../components/schemas/trip/trip.schema.yaml'
+    '404':
+      $ref: '../../components/responses/404.not-found.response.yaml'

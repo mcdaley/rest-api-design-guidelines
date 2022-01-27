@@ -1,0 +1,32 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/driver/new-driver.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Driver details required to create a new driver for the taxi app.
+required:
+  - first_name
+  - last_name
+  - email
+  - mobile 
+  - driver_license
+properties:
+  first_name:
+    type:       string 
+    maxLength:  128
+    example:    Alex
+  last_name:
+    type:       string 
+    maxLength:  128
+    example:    Reiger
+  email:
+    type:       string 
+    format:     email 
+    example:    alex.reiger@taxi.com 
+  mobile:
+    type:       string 
+    pattern:    '^\d{3}-\d{3}-\d{4}$'
+    example:    202-875-4343
+  driver_license:
+    type:       object 
+    $ref:       '../driver-license/new-driver-license.schema.yaml'

@@ -1,0 +1,9 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/credit-card/credit-card-list.schema.yaml
+# -----------------------------------------------------------------------------
+type:   object
+properties:
+  credit-cards:
+    type:   array
+    items:
+      $ref: './credit-card.schema.yaml'

@@ -1,0 +1,9 @@
+# -----------------------------------------------------------------------------
+# openapi/components/parameters/page.param.yaml
+# -----------------------------------------------------------------------------
+name:     page
+in:       query
+schema:
+  type:     integer
+  minimum:  1
+  default:  1
