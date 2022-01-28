@@ -21,6 +21,10 @@ info:
     demonstrate how to implement the Rest API Design Guidelines using
     the OpenAPI standards.
 
+    The APIs is apartial implementation of a rideshare company and provide 
+    the ability to create passengers, drivers, trips, request rides, and 
+    pay for rides.
+
 externalDocs:
   description:  Find out how to create a GitHub repo for your OpenAPI definition.
   url:          'https://github.com/Rebilly/generator-openapi-repo'

@@ -6,6 +6,11 @@ specification. The goal of the document is to define a set of standards and
 best practices for building APIs, so that product, engineering, and QA teams 
 can focus on the business logic of the APIs.
 
+## Rideshare Example
+The github repository contains an example Rideshare API that follows the
+guidelines and demonstrates how to write an OpenAPI swagger file, see
+[taxi.swagger.yaml](./taxi.swagger.yaml). 
+
 ## Restful APIs
 RESTful APIs leverage the HTTP verbs POST, GET, PUT/PATCH, and DELETE to 
 perform CRUD (Create, Read, Update, and Delete) on data or resources. The 
@@ -37,12 +42,12 @@ In order to design a useful and clean API, the system should be broken down
 into logical groupings (often called Models or Resources). In most cases 
 the resources are the **nouns** of your system.
 
-For example, in a banking application some of the resources are **customers**, 
-**accounts**, **loans**, and **transactions**.
+For example, in a riedshare application some of the resources are **passengers**, 
+**drivers**, **trips**, and **payments**.
 
 ## Resource Identifier
-Every resource that is available within a system (e.g. every customer, account, 
-and transaction) must be uniquely identifiable within the system. This is a 
+Every resource that is available within a system (e.g. every passenger, driver, 
+and trip) must be uniquely identifiable within the system. This is a 
 key element of the RESTful style of APIs; the ability to individually address 
 any item within your system and store these identifiers for later use. Resource 
 identifiers can be any of the following:
@@ -60,27 +65,32 @@ immutable. ***Primary keys*** or ***Personally Identifiable Information (PII)***
 ## Representation
 A key concept in RESTful API design is the idea of the representation 
 of a resource at any particular time. When you ask the system for 
-account information you will receive a representation of the account 
+passenger information you will receive a representation of the account 
 as shown below:
 
 <pre>
-  <b>GET /accounts/123456</b>
+  <b>GET /passengers/123456</b>
   200 OK
   Content-Type: application/json
 
   {
-    “id”:                “123456”,
-    “nickname”:          “Checking”,
-    “routing_number”:    “123456789”,
-    “available_balance”: 1000.00,
-    “posted_balance”:    900.00,
-    “status”:            “active”
+    "first_name":   "John",
+    "last_name":    "Doe",
+    "mobile":       "415-894-1234",
+    "email":        "john.doe@email.com",
+    "address": {
+      "address_line1":  "1 Market St.",
+      "address_line2":  "",
+      "city":           "San Francisco",
+      "state":          "CA",
+      "zip_code":       "94105"
+    }
   }
 </pre>
 
 This representation can change over time as the system and data within 
 changes. A future call to this same endpoint may yield a different 
-representation if the account balance changes or if the account is blocked.
+representation if the passenger changed his email and moved.
 
 <pre>
   <b>GET /accounts/123456</b>
@@ -88,12 +98,17 @@ representation if the account balance changes or if the account is blocked.
   Content-Type: application/json
 
   {
-    “id”:                “123456”,
-    “nickname”:          “Spending”,
-    “routing_number”:    “123456789”,
-    <b><i>“available_balance”: 400.00,</b></i>
-    <b><i>“posted_balance”:    400.00,</b></i>
-    <b><i>“status”:            “blocked”</b></i>
+    "first_name":   "John",
+    "last_name":    "Doe",
+    "mobile":       "415-894-1234",
+    <b><i>"email":        "johnd@aol.com",</b></i>
+    "address": {
+      <b><i>"address_line1":  "One Bills Drive",</b></i>
+      <b><i>"address_line2":  "",</b></i>
+      <b><i>"city":           "Orchard Park",</b></i>
+      <b><i>"state":          "NY",</b></i>
+      <b><i>"zip_code":       "14075"</b></i>
+    }
   }
 </pre>
 
@@ -101,15 +116,11 @@ representation if the account balance changes or if the account is blocked.
 A controller resource models a procedural concept. Controller resources are like 
 executable functions, with parameters and return values, inputs, and outputs. 
 Use a “verb” to denote controller archetype. In the examples below, the controller 
-resource for accounts is block and the controller resource for cards is pin. Both 
-block and pin are used to make changes to the Account and Card resources.
+resource for trips is for the passenger to pay for the trip after being dropped off.
 
 ```
-// Block an account
-POST /accounts/{account_id}/block 
-
-// Update a card’s pin
-PUT /cards/{card_id}/pin
+// Pay for a trip after dropoff
+POST /trips/{tripId}/pay
 ```
 
 ## Namespace
@@ -186,8 +197,8 @@ than one word., e.g., “team-members, accounts”
 The following are examples of resources:
 
 ```
-GET /api/v1/accounts
-GET /api/v1/team-members
+GET /api/v1/drivers
+GET /api/v1/credit-cards
 ```
 
 **Note:** This is the only place where hyphens are used as a word separator. 
@@ -195,13 +206,13 @@ In nearly all other situations camelCase OR snake_case, ( _ ), MUST be used.
 
 #### Resource Identifier
 When performing an action on a specific resource then the Id in the documentation 
-will be the name of the resource w/ ‘_id’ appended to the end, e.g. **account_id**, 
-**user_id** when using the snake_case naming convention. The following are examples 
+will be the name of the resource w/ ‘_id’ appended to the end, e.g. **passenger_id**, 
+**trip_id** when using the snake_case naming convention. The following are examples 
 of naming Ids:
 
 ```
-GET /api/v1/accounts/{account_id}
-GET /api/v1/accounts/{account_id}/transactions/{transaction_id}
+GET /api/v1/drivers/{driver_id}
+GET /api/v1/drivers/{driver_id_id}/trips/{trip_id}
 ```
 
 #### Query Parameters
@@ -217,22 +228,21 @@ parameters will be:
 
 ## Hierarchical Data URIs 
 Resources often have some kind of functional hierarchy and it makes sense to 
-nest the resources in the URI, for example to get the transactions associated 
-with an account we can have:
+nest the resources in the URI, for example to get the payments to a driver:
 
 ```
-// Return all transactions for an account
-GET /accounts/{account_id}/transactions
+// Return all payments for a driver
+GET /drivers/{driver_id}/payments
 
-// Return a single transaction for an account
-GET /accounts/{account_id}/transactions/{transaction_id}
+// Return a single payment for a driver
+GET /drivers/{driver_id}/payments/{payment_id}
 ```
 
 Using the functional hierarchy is recommended over adding query parameters, 
-for example to get all of an account’s transactions do NOT make the URI: 
+for example to get all of a driver’s payments do NOT make the URI: 
 
 ```
-GET /transactions?account_id=1234. 
+GET /payments?driver_id=1234. 
 ```
 
 Typically, we do not want to nest too many levels in the hierarchy and it is 
@@ -453,47 +463,47 @@ definitions and examples of HTTP requests:
 Fetches one or more resources.
 
 ```
-GET /customers
-GET /accounts
-GET /accounts/456789
-GET /accounts/456789/transactions
-GET /accounts/456789/transactions/123
+GET /passengers
+GET /drivers
+GET /drivers/456789
+GET /drivers/456789/payments
+GET /drivers/456789/payments/123
 ```
 
 ### POST
 Creates a new resource.
 
 ```
-POST /customers
-POST /accounts
-POST /accounts/456789/transactions
+POST /trips
+POST /passengers
+POST /passengers/456789/credit-cards
 ```
 
 ### PUT
 Updates all of the fields in a resource.
 
 ```
-PUT /customers/john-doe
-PUT /accounts/456789
-PUT /accounts/456789/transactions/123
+PUT /drivers/456789
+PUT /passengers/john-doe
+PUT /passengers/john-doe/credit-cards/123
 ```
 
 ### PATCH
 Update some of the fields in a resource.
 
 ```
-PATCH /customers/john-doe
-PATCH /accounts/456789
-PATCH /accounts/456789/transactions/123
+PATCH /trips/456789
+PATCH /passengers/john-doe
+PATCH /accounts/john-doe/addresses/123
 ```
 
 ### DELETE
 Deletes a resource.
 
 ```
-DELETE /customers/john-doe
-DELETE /account/456789
-DELETE /accounts/456789/transactions/123
+DELETE /drivers/456789
+DELETE /passengers/john-doe
+DELETE /passengers/john-doe/credit-cards/123
 ```
 
 ## Request Payload Formats
@@ -546,7 +556,8 @@ standard URI query parameters.
 ## Pagination
 Pagination is the process of returning a large set of results in chunks (or pages) 
 to reduce the amount of information that is sent with each response. Pagination 
-can be implemented using offset-based or cursor-based pagination. 
+can be implemented using offset-based or cursor-based pagination and this document
+will cover offset pagination.
 
 ### Offset Pagination
 The following query parameters are used to support offset-pagination.
@@ -706,9 +717,11 @@ pagination as shown below:
 ```
 {
   “metadata”: {
-    “total_count”: 100,
-    “page”:        2,
-    “page_size”:   25
+    "pagination": {
+      “total_count”: 100,
+      “page”:        2,
+      “page_size”:   25
+    }
   },
   “{resources}”: [
     ...
@@ -767,10 +780,12 @@ of resources fetched in response.
     ...
   ],
   “metadata”: {
-    “total_count”: 100,
-    “page”:        2,
-    “page_size”:   25
-  },
+    "pagination": {
+      “total_count”: 100,
+      “page”:        2,
+      “page_size”:   25
+    }
+  }
 }
 ```
 
@@ -790,7 +805,7 @@ following fields:
 | code            | Mandatory | An application specific numeric error code |
 | resource        | Mandatory | The resource where the error occurred. |
 | title           | Mandatory | The error’s title |
-| message         | Mandatory | Text that specifies the error, for example **Account Id “456789” is not found**. |
+| message         | Mandatory | Text that specifies the error, for example **Passenger Id “456789” is not found**. |
 | stack           | Optional  | A stack trace of the error that can be used in development and testing. |
 
 Below is an example error message:
@@ -801,9 +816,9 @@ Below is an example error message:
     “httpStatus”: 404,
     “request_id”: “86032cbe-a804-4c3b-86ce-ec3041e3effc”,
     “code”:       1101,
-    “resource”:   “Accounts”,
+    “resource”:   “Drivers”,
     “title”:      “Resource Not Found”,
-    “message”:    “Account ID “xys786” is not found”
+    “message”:    “Driver Id “xys786” is not found”
   }]
 }
 ```
@@ -858,15 +873,20 @@ NA
 | requestID    | Unique Id for the transaction to support idempotency |
 
 #### Body
-Example request body for creating a new Account:
+Example request body for creating a new Driver:
 
 ```
 {
-  “name”:            “My Checking”,
-  “type:             “checking”,
-  “opening_balance”: 0,
-  “opening_date”:    “2021-09-14”
-  “user_id”:         “xxyy-abba”
+  "first_name":   "Alex",
+  "last_name":    "Reiger",
+  "email":        "alex.reiger@taxi.com",
+  "mobile":       "202-875-4343",
+  "driver_license": {
+    "license_number":   "CA5260863502",
+    "name":             "Alex Reiger",
+    "state":            "CA",
+    "expiration_date":  "2024-03-17"
+  }
 }
 ```
 
@@ -901,20 +921,21 @@ resource as shown in the example below:
 
 ```
 {
-  “account”: {
-    “id”:                “abcxwz”,
-    “name”:              “My Checking”,
-    “type:               “checking”,
-    “status”:            “active”,
-    “account_number”:    “123456789012”,
-    “routing_number”:    “123456789”,
-    “posted_balance”:    0,
-    “available_balance”: 0,
-    “currency”:          “USD”,
-    “user_id”:           “xxyy-abba”,
-    “opening_date”:      “09-14-2021”,
-    “created_at”:        “2021-09-14T22:35:56.560Z”,
-    “updated_at”:        “2021-09-14T22:35:56.560Z”,
+  "driver": {
+    "id":           "d68825b3-830c-44f8-953e-a8b5cd943aa8",
+    "first_name":   "Alex",
+    "last_name":    "Reiger",
+    "email":        "alex.reiger@taxi.com",
+    "mobile":       "202-875-4343",
+    "driver_license": {
+      "id":               "671c272f-370f-40f9-b863-7531aa696b4a",
+      "license_number":   "CA5260863502",
+      "name":             "Alex Reiger",
+      "state":            "CA",
+      "expiration_date":  "2024-03-17"
+    },
+    “created_at”:   “2021-09-14T22:35:56.560Z”,
+    “updated_at”:   “2021-09-14T22:35:56.560Z”,
   }
 }
 ```
@@ -924,8 +945,8 @@ to parse the response. For example in javascript a developer can access
 the new account using the code:
 
 ```javascript
-const { account }   = response.body
-console.log(`Account number=${account.number}, balance=${account.available_balance})
+const { driver }   = response.body
+console.log(`Driver name=${driver.last_name}, mobile=${driver.mobile})
 ```
 
 ## Fetch List of Resources: GET /api/v1/{resources}
@@ -993,54 +1014,56 @@ NA
 | requestId   | Unique identifier sent in the client request for logging |
 
 #### Body
-The response body to get a list of resources returns the resources defined by 
+The response body to get a collection of resources returns the resources defined by 
 the plural resource name and an array of resources. In the example below the 
-resources are defined by the “transactions” label. The response also includes 
+resources are defined by the “trips” label. The response also includes 
 data needed to define pagination in the “metadata” section.
 
-````
-"transactions": [
-  {
-    "id":           "613114c870e958ee3289fd42",
-    "status":       "Posted",
-    "type":         "TransferCredit",
-    "description":  "Bartoletti - Moore",
-    "date":         "2021-09-02T05:49:49.201Z",
-    "currency":     "USD",
-    "amount":       "595",
-    "account_id":   "613114c670e958"
-  },
-  {
-    "id":           "613114c870e958ee3289fd3e",
-    "status":       "Posted",
-    "type":         "CashWithdrawal",
-    "description":  "Buckridge, Bots",
-    "date":         "2021-09-02T04:13:43.537Z",
-    "currency":     "USD",
-    "amount":       "945",
-    "account_id":   "613114c670e958"
-  },
-  ...
-],
-"metadata": {
-  "pagination": {
-    "total_count":  250,
-    "page_size":    20,
-    "offset":        4
+```
+{
+  "trips": [
+    {
+      "id":             "beaf7b93-b8de-41eb-92af-8af58b50409b",
+      "passenger_id":   "e614cc4b-9bd7-47c2-85b3-eca88cb9236e",
+      "driver_id":      "1ade3c8b-f30d-4bca-8cd8-cd123d4906e9",
+      "pickup_location": {
+        "address_line1":  "1 Market St.",
+        "city":           "San Francisco",
+        "state":          "CA",
+        "zip_code":       94105
+      },
+      "dropoff_location": {
+        "address_line1":  "1705 Mariposa St",
+        "city":           "San Francisco",
+        "state":          "CA",
+        "zip_code":       94107
+      },
+      "request_datetime": "string",
+      "status":           "Accepted",
+      "amount":           25.00
+    },
+    ...
+  ],
+  "metadata": {
+    "pagination": {
+      "page":         2,
+      "page_size":    20,
+      "total_count":  155
+    }
   }
-},
-````
+}
+```
 
 Organizing the response by the plural resource makes it easy for a 
 developer to process the response and the pagination data. For 
 example, to process all the transactions in the response in JavaScript:
 
 ```javascript
-const { transactions }  = response.body
-const { pagination }    = response.body.metadata
+const { trips }       = response.body
+const { pagination }  = response.body.metadata
 
-transactions.forEach( (transaction) => {
-  console.log(`Transaction id=${transaction.id}, amount=${transaction.amount})
+trips.forEach( (trip) => {
+  console.log(`Trip id=${trip.id}, amount=${trip.amount})
 })
 ```
 
@@ -1083,21 +1106,24 @@ NA
 | requestId   | Unique identifier sent in the client request for logging |
 
 #### Body
+The following response retrieved a single passenger from the taxi app.
+
 ```
-“account”: {
-  “id”:                “abcxwz”,
-  “name”:              “My Checking”,
-  “type:               “checking”,
-  “status”:            “active”,
-  “account_number”:    “123456789012”,
-  “routing_number”:    “123456789”,
-  “posted_balance”:    0,
-  “available_balance”: 0,
-  “currency”:          “USD”,
-  “user_id”:           “xxyy-abba”,
-  “opening_date”:      “09/14/2021”,
-  “created_at”:        “2021-09-14T22:35:56.560Z”,
-  “updated_at”:        “2021-09-14T22:35:56.560Z”,
+{
+  "passenger": {
+    "id":         "d290f1ee-6c54-4b01-90e6-d701748f0851",
+    "first_name": "John",
+    "last_name":  "Doe",
+    "mobile":     "415-894-1234",
+    "email":      "john.doe@email.com",
+    "address": {
+      "id":             "79455671-2e46-46f1-b046-37d827f33103",
+      "address_line1":  "1 Market St.",
+      "city":           "San Francisco",
+      "state":          "CA",
+      "zip_code":       94105
+    }
+  }
 }
 ```
 
@@ -1106,8 +1132,8 @@ to process the response. For example to process the transaction in
 JavaScript:
 
 ```javascript
-const { transaction } = response.body
-console.log(`Transaction id=${transaction.id} amount=${transaction.amount}`)
+const { passenger } = response.body
+console.log(`Passenger first_name=${passenger.first_name} mobile=${passenger.mobile}`)
 ```
 
 ## Update Resource Attributes: PATCH /api/v1/{resources}/{resource_id}
@@ -1132,13 +1158,12 @@ resource id. API can set the default to true or false.
 | requestID    | Unique identifier sent in the client request for idempotency. |
 
 #### Body
-The following example code updates the posted_balance and available_balance
-for an Account.
+The following example code updates the passengers mobile number and email.
 
 ```
 {
-  posted_balance:     90.00
-  available_balance:  90.00
+  mobile: 510-455-1515
+  email:  johnd@gmail.com
 }
 ```
 
@@ -1169,7 +1194,7 @@ resource was updated as shown below:
 
 ```
 {
-  id:         "abcxwz",
+  id:         "1d973f86-690e-4632-ba01-fee2580b0264",
   updated_at: "2022-01-14T22:35:56.560Z"
 }
 ```
@@ -1178,20 +1203,19 @@ The second option is to return the updated resource as shown below:
 
 ```
 {
-  “account”: {
-    “id”:                “abcxwz”,
-    “name”:              “My Checking”,
-    “type:               “checking”,
-    “status”:            “active”,
-    “account_number”:    “123456789012”,
-    “routing_number”:    “123456789”,
-    “posted_balance”:    90.00,
-    “available_balance”: 90.00,
-    “currency”:          “USD”,
-    “user_id”:           “xxyy-abba”,
-    “opening_date”:      “09/14/2021”,
-    “created_at”:        “2021-09-14T22:35:56.560Z”,
-    “updated_at”:        “2022-01-14T22:35:56.560Z”,
+  "passenger": {
+    "id":         "d290f1ee-6c54-4b01-90e6-d701748f0851",
+    "first_name": "John",
+    "last_name":  "Doe",
+    mobile:       510-455-1515
+    email:        johnd@gmail.com
+    "address": {
+      "id":             "79455671-2e46-46f1-b046-37d827f33103",
+      "address_line1":  "1 Market St.",
+      "city":           "San Francisco",
+      "state":          "CA",
+      "zip_code":       94105
+    }
   }
 }
 ```
@@ -1218,17 +1242,17 @@ resource id. API can set the default to true or false.
 | requestID    | Unique identifier sent in the client request for logging. |
 
 #### Body
-The following example code updates a user's address when the user moves. For the
-PUT request all of the address fields are required in the request.
+The following example code updates a passenger's address when the passenger 
+moves. For the PUT request all of the address fields are required in the request.
 
 ```
 {
   "name":   "John Doe",
-  "line1":  "One Market St.",
+  "line1":  "1 Bills Dr.",
   "line2":  "",
-  "city":   "San Francisco",
-  "state":  "CA",
-  "zip":    "94105"
+  "city":   "Orchard Park",
+  "state":  "NY",
+  "zip":    "14127"
 }
 ```
 
@@ -1259,7 +1283,7 @@ resource was updated as shown below:
 
 ```
 {
-  id:         "abcxwz",
+  id:         "e738f1a9-4012-4866-8031-5701d6a13e2a",
   updated_at: "2022-01-14T22:35:56.560Z"
 }
 ```
@@ -1269,13 +1293,13 @@ The second option is to return the updated resource as shown below:
 ```
 {
   “address”: {
-    “id”:           “abcxwz”,
+    “id”:           “e738f1a9-4012-4866-8031-5701d6a13e2a”,
     "name":         "John Doe",
-    "line1":        "One Market St.",
+    "line1":        "1 Bills Dr.",
     "line2":        "",
-    "city":         "San Francisco",
-    "state":        "CA",
-    "zip":          "94105"
+    "city":         "Orchard Park",
+    "state":        "NY",
+    "zip":          "14127"
     “created_at”:   “2021-09-14T22:35:56.560Z”,
     “updated_at”:   “2022-01-14T22:35:56.560Z”,
   }
