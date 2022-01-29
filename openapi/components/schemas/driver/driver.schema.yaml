@@ -8,6 +8,7 @@ required:
   - id
 allOf:
   - $ref: './new-driver.schema.yaml'
+  - $ref: '../lib/created-at.schema.yaml'
 properties:
   id:
     type:     string

@@ -1,0 +1,18 @@
+# -----------------------------------------------------------------------------
+# openapi/components/schemas/lib/created-at.schema.yaml
+# -----------------------------------------------------------------------------
+type:         object
+description:  >
+  Displays the time that a resource was created and last updated.
+required:
+  - created_at
+  - updated_at
+properties:
+  created_at:
+    type:     string
+    format:   datetime
+    example:  '2021-09-14T22:35:56.560Z'
+  updated_at:
+    type:     string
+    format:   datetime
+    example:  '2022-01-28T14:30:78.320Z'

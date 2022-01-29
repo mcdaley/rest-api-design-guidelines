@@ -93,7 +93,7 @@ changes. A future call to this same endpoint may yield a different
 representation if the passenger changed his email and moved.
 
 <pre>
-  <b>GET /accounts/123456</b>
+  <b>GET /passengers/123456</b>
   200 OK
   Content-Type: application/json
 
@@ -823,12 +823,6 @@ Below is an example error message:
 }
 ```
 
-# Event Notification
-TBD
-
-# Security
-TBD
-
 # Logging
 Logging helps developers find bugs in the APIs and helps customer support to 
 resolve client issues. Log messages should be JSON formatted so that tools 
@@ -844,6 +838,20 @@ should have the following the fields:
 | Request Id      | Unique identifier used to track the API request through multiple microservices. |
 | Client/User Id  | Unique identifier to track which user/client made the API request. |
 | Message         | Human understandable message that describes the informational or error message. |
+
+Below is an example JSON log message stating that a trip was created:
+
+```
+{"timestamp":"2021-08-06 09:28:52", "level":"info", "service":"trip", 
+"ip":"127.0.0.1", "requestId":"xyz","userId":"marv@bills.com",
+"message":"Created trip w/ id=610d6344989f17053e69e8ff"}
+```
+
+# Event Notification
+TBD
+
+# Security
+TBD
 
 # REST API Standard Request and Responses
 The following sections define standard RESTful API requests and responses using an 
